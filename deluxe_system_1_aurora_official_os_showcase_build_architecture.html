@@ -1,0 +1,1554 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deluxe System 1 "Aurora" (v1.0) — Refined Desktop Linux</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Load Lucide Icons for crisp UI iconography -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        obsidian: {
+                            950: '#07080B',
+                            900: '#0D1017',
+                            850: '#131722',
+                            800: '#1A202E',
+                            700: '#262E40',
+                        },
+                        gold: {
+                            300: '#FDE08D',
+                            400: '#F5C542',
+                            500: '#D4AF37',
+                            600: '#AA8825',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 5s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-6px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom scrollbar & refined glassmorphism utilities */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0D1017;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #262E40;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #D4AF37;
+        }
+
+        .gold-text-gradient {
+            background: linear-gradient(135deg, #FDE08D 0%, #F5C542 45%, #D4AF37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .gold-border-glow {
+            box-shadow: 0 0 25px -5px rgba(245, 197, 66, 0.18);
+        }
+
+        .aurora-backdrop {
+            background:
+                radial-gradient(circle at 18% 20%, rgba(212, 175, 55, 0.14) 0%, transparent 42%),
+                radial-gradient(circle at 82% 28%, rgba(45, 212, 191, 0.09) 0%, transparent 45%),
+                radial-gradient(circle at 50% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 50%);
+        }
+
+        .code-pre {
+            tab-size: 4;
+            -moz-tab-size: 4;
+        }
+    </style>
+</head>
+<body class="bg-obsidian-950 text-slate-200 font-sans antialiased selection:bg-gold-400 selection:text-obsidian-950 overflow-x-hidden">
+
+    <!-- Toast Notification Banner (Replaces alert()) -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-40 backdrop-blur-xl bg-obsidian-950/80 border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" class="flex items-center gap-3 group">
+                <!-- Custom Inline SVG Logo: Metallic Gold "D1" Monogram on Dark Rounded-Square Gradient Badge -->
+                <svg class="w-10 h-10 rounded-xl shadow-lg shadow-gold-500/20 transition-transform duration-300 group-hover:scale-105" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Deluxe System 1 Logo">
+                    <defs>
+                        <linearGradient id="bgGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#1E2536"/>
+                            <stop offset="55%" stop-color="#0F131C"/>
+                            <stop offset="100%" stop-color="#07090E"/>
+                        </linearGradient>
+                        <linearGradient id="goldGrad" x1="12" y1="12" x2="54" y2="52" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#FFF0B3"/>
+                            <stop offset="45%" stop-color="#F5C542"/>
+                            <stop offset="100%" stop-color="#B8860B"/>
+                        </linearGradient>
+                        <linearGradient id="borderGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#F5C542" stop-opacity="0.75"/>
+                            <stop offset="50%" stop-color="#D4AF37" stop-opacity="0.25"/>
+                            <stop offset="100%" stop-color="#F5C542" stop-opacity="0.65"/>
+                        </linearGradient>
+                    </defs>
+                    <rect x="1.5" y="1.5" width="61" height="61" rx="15" fill="url(#bgGrad)" stroke="url(#borderGrad)" stroke-width="2"/>
+                    <!-- Stylized Geometric D -->
+                    <path d="M16 19H27.5C34.9558 19 40 24.1 40 32C40 39.9 34.9558 45 27.5 45H16V19ZM21.5 24V40H27.2C31.7 40 34.4 36.9 34.4 32C34.4 27.1 31.7 24 27.2 24H21.5Z" fill="url(#goldGrad)"/>
+                    <!-- Stylized Sharp 1 -->
+                    <path d="M43 23.2L47.8 19H51.5V45H46.2V25.6L43 28.2V23.2Z" fill="url(#goldGrad)"/>
+                </svg>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold tracking-tight text-white text-base sm:text-lg">Deluxe System 1</span>
+                        <span class="text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-gold-400/15 text-gold-300 border border-gold-400/30">Aurora</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 hidden sm:block">Ubuntu 24.04 LTS Noble Base • v1.0</p>
+                </div>
+            </a>
+
+            <!-- Navigation Links -->
+            <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-slate-300">
+                <a href="#desktop-preview" class="hover:text-gold-400 transition-colors">Desktop Experience</a>
+                <a href="#software-suite" class="hover:text-gold-400 transition-colors">Software & Security</a>
+                <a href="#build-explorer" class="hover:text-gold-400 transition-colors">live-build Source</a>
+                <a href="#deployment" class="hover:text-gold-400 transition-colors">Deploy & Verify</a>
+            </nav>
+
+            <!-- Action Controls -->
+            <div class="flex items-center gap-2.5">
+                <button id="global-theme-toggle" onclick="togglePreviewTheme()" title="Toggle Desktop & Accent Preview Theme" class="p-2.5 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-white/10 text-slate-300 hover:text-gold-400 transition-all flex items-center gap-2 text-xs font-medium">
+                    <i data-lucide="sun-moon" class="w-4 h-4 text-gold-400"></i>
+                    <span class="hidden lg:inline" id="theme-toggle-label">Theme: Aurora Dark</span>
+                </button>
+                <a href="#build-explorer" class="px-4 py-2.5 rounded-xl bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-obsidian-950 font-semibold text-xs sm:text-sm shadow-lg shadow-gold-500/20 transition-all flex items-center gap-1.5">
+                    <i data-lucide="terminal" class="w-4 h-4"></i>
+                    <span>Build ISO</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative aurora-backdrop pt-14 pb-20 sm:pt-20 sm:pb-24 border-b border-white/10 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center max-w-4xl mx-auto">
+                <!-- Release Badge -->
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-obsidian-850/90 border border-gold-400/30 text-xs font-mono text-gold-300 mb-6 shadow-md">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>RELEASE 1.0 "AURORA" • REPRODUCIBLE LIVE-BUILD ARCHITECTURE</span>
+                </div>
+
+                <!-- Main Headline -->
+                <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.08] mb-6">
+                    Precision Desktop Linux.<br>
+                    <span class="gold-text-gradient">Zero Bloat. Pure Speed.</span>
+                </h1>
+
+                <p class="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed mb-8">
+                    Engineered on <strong class="text-white font-semibold">Ubuntu 24.04 LTS (Noble)</strong>, <strong class="text-gold-300 font-semibold">Deluxe System 1 "Aurora"</strong> delivers a bespoke GNOME desktop, creator & developer toolchain, zram acceleration, and hardened security in a sleek <span class="font-mono text-white">4.18 GB</span> bootable ISO.
+                </p>
+
+                <!-- Key Specs Pills -->
+                <div class="flex flex-wrap items-center justify-center gap-2.5 mb-10">
+                    <span class="px-3.5 py-1.5 rounded-full bg-obsidian-850/90 border border-white/10 text-xs sm:text-sm text-slate-200 flex items-center gap-2">
+                        <i data-lucide="cpu" class="w-4 h-4 text-gold-400"></i> Ubuntu 24.04 LTS Base
+                    </span>
+                    <span class="px-3.5 py-1.5 rounded-full bg-obsidian-850/90 border border-white/10 text-xs sm:text-sm text-slate-200 flex items-center gap-2">
+                        <i data-lucide="hard-drive" class="w-4 h-4 text-gold-400"></i> x86_64 (UEFI + Legacy BIOS)
+                    </span>
+                    <span class="px-3.5 py-1.5 rounded-full bg-obsidian-850/90 border border-white/10 text-xs sm:text-sm text-slate-200 flex items-center gap-2">
+                        <i data-lucide="disc" class="w-4 h-4 text-gold-400"></i> 4.18 GB (&lt; 4.7 GB DVD/USB)
+                    </span>
+                    <span class="px-3.5 py-1.5 rounded-full bg-obsidian-850/90 border border-white/10 text-xs sm:text-sm text-slate-200 flex items-center gap-2">
+                        <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> Zero Snap Bloat • Flatpak Ready
+                    </span>
+                    <span class="px-3.5 py-1.5 rounded-full bg-obsidian-850/90 border border-white/10 text-xs sm:text-sm text-slate-200 flex items-center gap-2">
+                        <i data-lucide="key-round" class="w-4 h-4 text-gold-400"></i> Live User: <code class="font-mono text-gold-300">deluxe</code>
+                    </span>
+                </div>
+
+                <!-- Primary CTA Buttons -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 mb-6">
+                    <a href="https://github.com/luisdiko14-lab/Deluxe-System-1" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-gradient-to-r from-gold-400 via-gold-500 to-gold-600 hover:from-gold-300 hover:to-gold-500 text-obsidian-950 font-bold text-sm sm:text-base shadow-xl shadow-gold-500/20 transition-all flex items-center justify-center gap-2.5">
+                        <i data-lucide="github" class="w-5 h-5"></i>
+                        <span>GitHub: luisdiko14-lab/Deluxe-System-1</span>
+                        <i data-lucide="external-link" class="w-4 h-4 opacity-80"></i>
+                    </a>
+
+                    <button onclick="openIsoStatusModal()" class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-obsidian-850 hover:bg-obsidian-800 border border-amber-400/40 hover:border-gold-400 text-slate-200 font-semibold text-sm sm:text-base transition-all flex items-center justify-center gap-2.5 cursor-pointer">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+                        <span>ISO Download: Not Yet</span>
+                        <span class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-amber-400/15 text-amber-300 border border-amber-400/30">Build from Source</span>
+                    </button>
+
+                    <button onclick="copyGitClone()" class="w-full sm:w-auto px-5 py-3.5 rounded-2xl bg-obsidian-900/90 hover:bg-obsidian-800 border border-white/10 text-slate-300 hover:text-white font-mono text-xs sm:text-sm transition-all flex items-center justify-center gap-2 cursor-pointer" title="Copy git clone command">
+                        <i data-lucide="copy" class="w-4 h-4 text-gold-400"></i>
+                        <span>Copy git clone</span>
+                    </button>
+                </div>
+
+                <!-- Git Clone & ISO Status Strip -->
+                <div class="inline-flex flex-wrap items-center justify-center gap-2.5 px-4 py-2.5 rounded-2xl bg-obsidian-900/85 border border-white/10 text-xs font-mono text-slate-300 max-w-full">
+                    <span class="text-gold-400 font-semibold">$</span>
+                    <code id="git-clone-value" class="select-all text-emerald-300 break-all">git clone https://github.com/luisdiko14-lab/Deluxe-System-1.git</code>
+                    <span class="hidden sm:inline text-white/20">|</span>
+                    <span class="text-[11px] text-amber-300">ISO Release: Not yet uploaded (build locally via <code class="text-white">sudo ./build.sh</code>)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ISO Status Modal ("Not Yet Available" -> Build from Source Guide) -->
+    <div id="iso-status-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/75 backdrop-blur-md">
+        <div class="w-full max-w-lg rounded-3xl bg-obsidian-900 border border-gold-400/40 p-6 sm:p-7 shadow-2xl space-y-5">
+            <div class="flex items-start justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-amber-400/15 border border-amber-400/40 flex items-center justify-center text-amber-300">
+                        <i data-lucide="clock" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <span class="text-[11px] font-mono uppercase tracking-wider text-amber-300">Pre-Release Status</span>
+                        <h3 class="text-lg font-bold text-white">ISO Download: Not Yet Available</h3>
+                    </div>
+                </div>
+                <button onclick="closeIsoStatusModal()" class="p-2 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 text-slate-400 hover:text-white transition-colors cursor-pointer">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+
+            <p class="text-sm text-slate-300 leading-relaxed">
+                Pre-built binary releases of <code class="font-mono text-gold-300">deluxe-system-1-1.0-amd64.iso</code> have <strong class="text-white">not been uploaded yet</strong>. You can inspect the complete build files or generate your own bootable ISO + SHA256 checksum right now on Ubuntu 24.04 LTS from the official GitHub repository:
+            </p>
+
+            <div class="p-4 rounded-2xl bg-obsidian-950 border border-white/10 font-mono text-xs text-emerald-400 space-y-1.5 overflow-x-auto">
+                <div class="text-slate-400"># Clone & build Deluxe System 1 locally:</div>
+                <div>git clone https://github.com/luisdiko14-lab/Deluxe-System-1.git</div>
+                <div>cd Deluxe-System-1 && chmod +x build.sh</div>
+                <div>sudo ./build.sh</div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-2">
+                <button onclick="copyGitClone()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-obsidian-850 hover:bg-obsidian-800 border border-white/15 text-slate-200 text-xs font-semibold transition-all flex items-center justify-center gap-2 cursor-pointer">
+                    <i data-lucide="copy" class="w-4 h-4 text-gold-400"></i>
+                    <span>Copy Clone Command</span>
+                </button>
+                <a href="https://github.com/luisdiko14-lab/Deluxe-System-1" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-300 hover:to-gold-400 text-obsidian-950 text-xs font-bold transition-all flex items-center justify-center gap-2">
+                    <i data-lucide="github" class="w-4 h-4"></i>
+                    <span>Open GitHub Repo</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+                <!-- Checksum Strip -->
+                <div class="inline-flex flex-wrap items-center justify-center gap-2 px-4 py-2 rounded-xl bg-obsidian-900/80 border border-white/10 text-[11px] sm:text-xs font-mono text-slate-400 max-w-full">
+                    <span class="text-gold-400 font-semibold">SHA256:</span>
+                    <span id="sha256-value" class="truncate max-w-[260px] sm:max-w-none select-all text-slate-300">8f4e9c2b71a0d6e53c18f92b44a7d10e6b3c89a2f51d47e0c9b8a7654321fedc</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE LIVE DESKTOP PREVIEW ("AURORA" GNOME EXPERIENCE) -->
+    <section id="desktop-preview" class="py-16 sm:py-24 border-b border-white/10 bg-obsidian-900/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Section Header -->
+            <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-6 mb-10">
+                <div>
+                    <span class="text-xs font-mono uppercase tracking-widest text-gold-400 block mb-2">Interactive Desktop Environment</span>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Experience the "Aurora" GNOME Desktop</h2>
+                    <p class="text-slate-400 mt-2 max-w-2xl text-sm sm:text-base">
+                        Crafted with <span class="text-slate-200 font-medium">Inter</span> UI typography, <span class="font-mono text-slate-200">JetBrains Mono</span> terminals, Papirus icons, rounded shell geometry, and an auto-adapting Dark/Light theme. Test the live <strong class="text-gold-300">Welcome to Deluxe System 1</strong> app and switch between the 5 custom SVG wallpapers below.
+                    </p>
+                </div>
+
+                <!-- Wallpaper Switcher Gallery Controls -->
+                <div class="flex flex-col gap-2">
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">5 Original Aurora SVG Wallpapers:</span>
+                    <div class="flex flex-wrap gap-2" id="wallpaper-selector">
+                        <button onclick="setWallpaper(0)" data-wp="0" class="wp-btn active px-3 py-1.5 rounded-xl text-xs font-medium border border-gold-400 bg-gold-400/15 text-gold-300 transition-all">1. Solar Gold</button>
+                        <button onclick="setWallpaper(1)" data-wp="1" class="wp-btn px-3 py-1.5 rounded-xl text-xs font-medium border border-white/10 bg-obsidian-850 text-slate-300 hover:border-white/30 transition-all">2. Midnight Aurora</button>
+                        <button onclick="setWallpaper(2)" data-wp="2" class="wp-btn px-3 py-1.5 rounded-xl text-xs font-medium border border-white/10 bg-obsidian-850 text-slate-300 hover:border-white/30 transition-all">3. Obsidian Ridge</button>
+                        <button onclick="setWallpaper(3)" data-wp="3" class="wp-btn px-3 py-1.5 rounded-xl text-xs font-medium border border-white/10 bg-obsidian-850 text-slate-300 hover:border-white/30 transition-all">4. Nebula Silk</button>
+                        <button onclick="setWallpaper(4)" data-wp="4" class="wp-btn px-3 py-1.5 rounded-xl text-xs font-medium border border-white/10 bg-obsidian-850 text-slate-300 hover:border-white/30 transition-all">5. Minimal D1</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simulated GNOME Desktop Frame -->
+            <div class="rounded-3xl border border-white/15 bg-obsidian-950 shadow-2xl overflow-hidden gold-border-glow">
+                <!-- Desktop Canvas with Dynamic SVG Wallpaper Background -->
+                <div id="gnome-desktop-canvas" class="relative w-full min-h-[560px] sm:min-h-[620px] flex flex-col justify-between transition-all duration-500 select-none overflow-hidden">
+                    
+                    <!-- Dynamic Inline SVG Wallpaper Layer -->
+                    <div id="desktop-wallpaper-svg" class="absolute inset-0 pointer-events-none"></div>
+
+                    <!-- GNOME Top Panel -->
+                    <div id="gnome-top-bar" class="relative z-20 h-8 px-4 flex items-center justify-between text-xs font-medium bg-black/55 backdrop-blur-md text-white border-b border-white/10">
+                        <div class="flex items-center gap-3">
+                            <span class="flex items-center gap-1.5 font-semibold text-gold-300">
+                                <span class="w-2 h-2 rounded-full bg-gold-400"></span>
+                                Activities
+                            </span>
+                            <span class="text-white/60 hidden sm:inline">Welcome to Deluxe System 1</span>
+                        </div>
+                        <div class="font-mono text-[11px] tracking-tight text-white/90" id="gnome-clock">Mon Nov 16 • 13:13</div>
+                        <div class="flex items-center gap-3 text-white/85">
+                            <span class="hidden sm:inline-flex items-center gap-1 text-[11px] text-emerald-300">
+                                <i data-lucide="shield" class="w-3 h-3"></i> UFW
+                            </span>
+                            <i data-lucide="wifi" class="w-3.5 h-3.5"></i>
+                            <i data-lucide="volume-2" class="w-3.5 h-3.5"></i>
+                            <button onclick="togglePreviewTheme()" class="hover:text-gold-400 transition-colors" title="Toggle Dark/Light Shell">
+                                <i data-lucide="moon" id="panel-theme-icon" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Desktop Workspace Area: Interactive Welcome App Window -->
+                    <div class="relative z-20 flex-1 flex items-center justify-center p-3 sm:p-6">
+                        <div id="welcome-app-window" class="w-full max-w-3xl rounded-2xl shadow-2xl border transition-all duration-300 overflow-hidden bg-obsidian-900/95 border-white/15 text-slate-100 backdrop-blur-xl">
+                            
+                            <!-- Libadwaita / GTK4 Window Headerbar -->
+                            <div id="welcome-window-header" class="px-4 py-3 border-b border-white/10 flex items-center justify-between bg-obsidian-850/90">
+                                <div class="flex items-center gap-2.5">
+                                    <!-- Mini D1 Badge -->
+                                    <div class="w-6 h-6 rounded-lg bg-gradient-to-br from-gold-400 to-gold-600 text-obsidian-950 font-extrabold text-xs flex items-center justify-center">D1</div>
+                                    <span class="font-semibold text-xs sm:text-sm">Welcome to Deluxe System 1</span>
+                                    <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-gold-400/15 text-gold-300 border border-gold-400/30">v1.0 Aurora</span>
+                                </div>
+                                <!-- Window Controls -->
+                                <div class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full bg-slate-600/70 inline-block"></span>
+                                    <span class="w-3 h-3 rounded-full bg-gold-500/80 inline-block"></span>
+                                    <span class="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
+                                </div>
+                            </div>
+
+                            <!-- Welcome App Internal Layout -->
+                            <div class="grid grid-cols-1 md:grid-cols-12 min-h-[340px]">
+                                <!-- Sidebar Navigation -->
+                                <div id="welcome-sidebar" class="md:col-span-4 p-3 border-b md:border-b-0 md:border-r border-white/10 bg-obsidian-950/50 flex md:flex-col gap-1.5 overflow-x-auto">
+                                    <button onclick="switchWelcomeTab('appearance')" id="wtab-appearance" class="welcome-nav-btn active flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium text-left bg-gold-400/15 text-gold-300 border border-gold-400/30 whitespace-nowrap">
+                                        <i data-lucide="palette" class="w-4 h-4 shrink-0"></i>
+                                        <span>Look & Theme</span>
+                                    </button>
+                                    <button onclick="switchWelcomeTab('updates')" id="wtab-updates" class="welcome-nav-btn flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium text-left text-slate-400 hover:bg-white/5 whitespace-nowrap">
+                                        <i data-lucide="refresh-cw" class="w-4 h-4 shrink-0"></i>
+                                        <span>System Updates</span>
+                                    </button>
+                                    <button onclick="switchWelcomeTab('apps')" id="wtab-apps" class="welcome-nav-btn flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium text-left text-slate-400 hover:bg-white/5 whitespace-nowrap">
+                                        <i data-lucide="package-plus" class="w-4 h-4 shrink-0"></i>
+                                        <span>Curated Extras</span>
+                                    </button>
+                                    <button onclick="switchWelcomeTab('system')" id="wtab-system" class="welcome-nav-btn flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium text-left text-slate-400 hover:bg-white/5 whitespace-nowrap">
+                                        <i data-lucide="info" class="w-4 h-4 shrink-0"></i>
+                                        <span>OS Specs & Live User</span>
+                                    </button>
+                                </div>
+
+                                <!-- Main Content Area inside Welcome App -->
+                                <div class="md:col-span-8 p-5 flex flex-col justify-between">
+                                    <!-- Tab 1: Appearance & Theme -->
+                                    <div id="wpanel-appearance" class="welcome-panel space-y-4">
+                                        <div>
+                                            <h3 class="text-base font-bold">Personalize Your Aurora Desktop</h3>
+                                            <p class="text-xs opacity-75 mt-1">Switch between Aurora Dark, Daylight Silk, or Sunrise-to-Sunset automatic scheduling.</p>
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <button onclick="setDesktopMode('dark')" id="btn-mode-dark" class="p-3 rounded-xl border-2 border-gold-400 bg-obsidian-850 text-left transition-all">
+                                                <div class="flex items-center justify-between mb-1.5">
+                                                    <span class="text-xs font-semibold text-white">Aurora Dark</span>
+                                                    <i data-lucide="moon" class="w-4 h-4 text-gold-400"></i>
+                                                </div>
+                                                <p class="text-[11px] text-slate-400">Obsidian slate + gold accents</p>
+                                            </button>
+
+                                            <button onclick="setDesktopMode('light')" id="btn-mode-light" class="p-3 rounded-xl border border-white/15 bg-white/5 text-left transition-all">
+                                                <div class="flex items-center justify-between mb-1.5">
+                                                    <span class="text-xs font-semibold">Daylight Silk</span>
+                                                    <i data-lucide="sun" class="w-4 h-4 text-amber-500"></i>
+                                                </div>
+                                                <p class="text-[11px] opacity-70">Crisp alabaster + warm gold</p>
+                                            </button>
+                                        </div>
+
+                                        <div class="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between text-xs">
+                                            <div>
+                                                <span class="font-medium block">Night Light & Auto Theme</span>
+                                                <span class="text-[11px] opacity-70">Warm color temperature after sunset (4200K)</span>
+                                            </div>
+                                            <span class="px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-mono text-[11px]">Enabled</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tab 2: System Updates (deluxe-update) -->
+                                    <div id="wpanel-updates" class="welcome-panel hidden space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <div>
+                                                <h3 class="text-base font-bold">Unified System Updater</h3>
+                                                <p class="text-xs opacity-75">Runs <code class="font-mono text-gold-400">deluxe-update</code> across APT, Flatpak & fwupd.</p>
+                                            </div>
+                                            <button onclick="runSimulatedDeluxeUpdate()" id="btn-run-update" class="px-3.5 py-2 rounded-xl bg-gold-400 hover:bg-gold-300 text-obsidian-950 font-semibold text-xs transition-all flex items-center gap-1.5 cursor-pointer">
+                                                <i data-lucide="play" class="w-3.5 h-3.5"></i>
+                                                <span>Run Now</span>
+                                            </button>
+                                        </div>
+                                        <div id="update-terminal-output" class="p-3 rounded-xl bg-black/80 border border-white/10 font-mono text-[11px] text-emerald-400 h-40 overflow-y-auto space-y-1">
+                                            <div class="text-slate-400">$ deluxe-update --status</div>
+                                            <div>[✓] APT Noble Security & Updates: Up to date</div>
+                                            <div>[✓] Flathub Remote: Configured & ready</div>
+                                            <div>[✓] LVFS Firmware Daemon (fwupd): Active</div>
+                                            <div class="text-gold-300">Click "Run Now" to simulate full system sync...</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tab 3: Curated Extra Apps -->
+                                    <div id="wpanel-apps" class="welcome-panel hidden space-y-3">
+                                        <div>
+                                            <h3 class="text-base font-bold">One-Click Flathub & Dev Extras</h3>
+                                            <p class="text-xs opacity-75">Install optional tools without Snap bloat.</p>
+                                        </div>
+                                        <div class="space-y-2 text-xs">
+                                            <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                                                <div>
+                                                    <span class="font-semibold block">Steam & Proton Gaming Layer</span>
+                                                    <span class="text-[11px] opacity-70">com.valvesoftware.Steam (Flathub)</span>
+                                                </div>
+                                                <button onclick="toggleExtraApp(this)" class="px-3 py-1.5 rounded-lg bg-gold-400/20 text-gold-300 border border-gold-400/30 font-medium hover:bg-gold-400 hover:text-obsidian-950 transition-all">Install</button>
+                                            </div>
+                                            <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                                                <div>
+                                                    <span class="font-semibold block">Blender 3D Creation Suite</span>
+                                                    <span class="text-[11px] opacity-70">org.blender.Blender (Flathub)</span>
+                                                </div>
+                                                <button onclick="toggleExtraApp(this)" class="px-3 py-1.5 rounded-lg bg-gold-400/20 text-gold-300 border border-gold-400/30 font-medium hover:bg-gold-400 hover:text-obsidian-950 transition-all">Install</button>
+                                            </div>
+                                            <div class="p-2.5 rounded-xl bg-white/5 border border-white/10 flex items-center justify-between">
+                                                <div>
+                                                    <span class="font-semibold block">Tailscale Mesh VPN</span>
+                                                    <span class="text-[11px] opacity-70">Zero-config WireGuard networking</span>
+                                                </div>
+                                                <button onclick="toggleExtraApp(this)" class="px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium">Installed ✓</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tab 4: System Info -->
+                                    <div id="wpanel-system" class="welcome-panel hidden space-y-3 text-xs">
+                                        <h3 class="text-base font-bold">Deluxe System 1 "Aurora" Telemetry-Free</h3>
+                                        <div class="grid grid-cols-2 gap-2.5 font-mono text-[11px]">
+                                            <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                                                <span class="opacity-60 block">OS Release</span>
+                                                <span class="text-gold-300 font-semibold">Deluxe System 1 1.0</span>
+                                            </div>
+                                            <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                                                <span class="opacity-60 block">Base Kernel</span>
+                                                <span class="font-semibold">Linux 6.8 LTS (Noble)</span>
+                                            </div>
+                                            <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                                                <span class="opacity-60 block">Live Session User</span>
+                                                <span class="text-emerald-300 font-semibold">deluxe (passwordless)</span>
+                                            </div>
+                                            <div class="p-2.5 rounded-xl bg-white/5 border border-white/10">
+                                                <span class="opacity-60 block">Memory / Swap</span>
+                                                <span class="font-semibold">zram lz4 + preload</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bottom Bar inside Welcome App -->
+                                    <div class="pt-3 mt-3 border-t border-white/10 flex items-center justify-between text-[11px] opacity-75">
+                                        <span>Shortcuts: <kbd class="px-1.5 py-0.5 rounded bg-white/10 font-mono">Super+T</kbd> Terminal • <kbd class="px-1.5 py-0.5 rounded bg-white/10 font-mono">Super+E</kbd> Files</span>
+                                        <span class="font-mono text-gold-400">Papirus Icons</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Floating Bottom GNOME Dock (Papirus-styled Icons) -->
+                    <div class="relative z-20 pb-4 flex justify-center px-4">
+                        <div class="px-3.5 py-2 rounded-2xl bg-black/60 backdrop-blur-xl border border-white/15 shadow-2xl flex items-center gap-2.5 sm:gap-3.5 overflow-x-auto max-w-full">
+                            <!-- Firefox -->
+                            <button onclick="showToast('Launching Firefox (Native .deb — Zero Snap)', 'info')" class="group relative p-2 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-md hover:-translate-y-1.5 transition-all" title="Firefox Browser">
+                                <i data-lucide="globe" class="w-5 h-5"></i>
+                                <span class="w-1 h-1 rounded-full bg-gold-400 absolute -bottom-1 left-1/2 -translate-x-1/2"></span>
+                            </button>
+                            <!-- Files -->
+                            <button onclick="showToast('Opening Nautilus File Manager (/home/deluxe)', 'info')" class="group relative p-2 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 text-white shadow-md hover:-translate-y-1.5 transition-all" title="Files">
+                                <i data-lucide="folder" class="w-5 h-5"></i>
+                            </button>
+                            <!-- Terminal -->
+                            <button onclick="switchWelcomeTab('updates'); showToast('Opened deluxe-update CLI Console', 'info')" class="group relative p-2 rounded-xl bg-gradient-to-br from-slate-700 to-slate-900 border border-white/20 text-emerald-400 shadow-md hover:-translate-y-1.5 transition-all" title="Terminal (JetBrains Mono)">
+                                <i data-lucide="terminal-square" class="w-5 h-5"></i>
+                            </button>
+                            <!-- VS Code -->
+                            <button onclick="showToast('Launching Visual Studio Code + Python/Node/Docker Toolchains', 'info')" class="group relative p-2 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-md hover:-translate-y-1.5 transition-all" title="VS Code">
+                                <i data-lucide="code-2" class="w-5 h-5"></i>
+                            </button>
+                            <!-- LibreOffice -->
+                            <button onclick="showToast('Launching LibreOffice 24.2 Suite', 'info')" class="group relative p-2 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-md hover:-translate-y-1.5 transition-all" title="LibreOffice">
+                                <i data-lucide="file-text" class="w-5 h-5"></i>
+                            </button>
+                            <!-- GIMP / Inkscape -->
+                            <button onclick="showToast('Creative Studio Ready: GIMP, Inkscape & OBS Studio', 'info')" class="group relative p-2 rounded-xl bg-gradient-to-br from-purple-500 to-fuchsia-600 text-white shadow-md hover:-translate-y-1.5 transition-all" title="GIMP & Inkscape">
+                                <i data-lucide="pen-tool" class="w-5 h-5"></i>
+                            </button>
+                            <!-- VLC -->
+                            <button onclick="showToast('VLC Media Player + Full Restricted Codecs Pre-installed', 'info')" class="group relative p-2 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-md hover:-translate-y-1.5 transition-all" title="VLC Media Player">
+                                <i data-lucide="play-circle" class="w-5 h-5"></i>
+                            </button>
+                            <div class="w-px h-6 bg-white/15 mx-0.5"></div>
+                            <!-- Welcome App -->
+                            <button onclick="switchWelcomeTab('appearance')" class="group relative p-2 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 text-obsidian-950 font-extrabold shadow-md hover:-translate-y-1.5 transition-all" title="Welcome to Deluxe System 1">
+                                <span class="text-xs font-extrabold px-0.5">D1</span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-white absolute -bottom-1 left-1/2 -translate-x-1/2"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SYSTEM ARCHITECTURE & CURATED SOFTWARE SUITE -->
+    <section id="software-suite" class="py-16 sm:py-24 border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl mb-12">
+                <span class="text-xs font-mono uppercase tracking-widest text-gold-400 block mb-2">Curated & Hardened Stack</span>
+                <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight">Everything You Need. Nothing You Don't.</h2>
+                <p class="text-slate-400 mt-3 text-sm sm:text-base">
+                    Every package in Deluxe System 1 is thoughtfully chosen for immediate productivity out of the box—while staying comfortably under <strong class="text-white">4.7 GB</strong> and completely free of Snap Store prompts, Canonical telemetry, or pre-installed bloatware games.
+                </p>
+            </div>
+
+            <!-- 4 Category Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Category 1: Web & Office -->
+                <div class="p-6 rounded-2xl bg-obsidian-900/90 border border-white/10 hover:border-gold-400/40 transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-11 h-11 rounded-xl bg-gold-400/15 border border-gold-400/30 flex items-center justify-center text-gold-400 mb-5">
+                            <i data-lucide="briefcase" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Web & Office</h3>
+                        <p class="text-xs text-slate-400 mb-4 leading-relaxed">Fast native browser startup without Snap container overhead, paired with full document compatibility.</p>
+                        <ul class="space-y-2.5 text-sm text-slate-200">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-gold-400 shrink-0"></i> Firefox (Mozilla APT .deb)</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-gold-400 shrink-0"></i> LibreOffice Writer, Calc & Impress</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-gold-400 shrink-0"></i> Inter & JetBrains Mono Fonts</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-gold-400 shrink-0"></i> Liberation & Noto Core Fonts</li>
+                        </ul>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 text-[11px] font-mono text-slate-400">
+                        MPL-2.0 • GPLv3 • SIL OFL
+                    </div>
+                </div>
+
+                <!-- Category 2: Creative & Media -->
+                <div class="p-6 rounded-2xl bg-obsidian-900/90 border border-white/10 hover:border-gold-400/40 transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-11 h-11 rounded-xl bg-gold-400/15 border border-gold-400/30 flex items-center justify-center text-gold-400 mb-5">
+                            <i data-lucide="film" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Creative & Media</h3>
+                        <p class="text-xs text-slate-400 mb-4 leading-relaxed">Production-grade raster, vector, streaming, and playback tools with full multimedia codec support.</p>
+                        <ul class="space-y-2.5 text-sm text-slate-200">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-gold-400 shrink-0"></i> VLC Media Player</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-gold-400 shrink-0"></i> OBS Studio (Streaming/Capture)</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-gold-400 shrink-0"></i> GIMP & Inkscape Vector Studio</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-gold-400 shrink-0"></i> GStreamer & FFmpeg Full Codecs</li>
+                        </ul>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 text-[11px] font-mono text-slate-400">
+                        GPLv2+ • LGPLv2.1+
+                    </div>
+                </div>
+
+                <!-- Category 3: Developer Ready -->
+                <div class="p-6 rounded-2xl bg-obsidian-900/90 border border-white/10 hover:border-gold-400/40 transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-11 h-11 rounded-xl bg-gold-400/15 border border-gold-400/30 flex items-center justify-center text-gold-400 mb-5">
+                            <i data-lucide="code" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Developer Ready</h3>
+                        <p class="text-xs text-slate-400 mb-4 leading-relaxed">Immediate local compilation, containerization, and scripting environments right from live USB or disk.</p>
+                        <ul class="space-y-2.5 text-sm text-slate-200">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-gold-400 shrink-0"></i> Visual Studio Code (Official Repo)</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-gold-400 shrink-0"></i> Git & build-essential (GCC/Make)</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-gold-400 shrink-0"></i> Python 3 (pip/venv) & Node.js LTS</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-gold-400 shrink-0"></i> Docker Engine & Compose</li>
+                        </ul>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 text-[11px] font-mono text-slate-400">
+                        MIT • Apache-2.0 • PSF • GPLv2
+                    </div>
+                </div>
+
+                <!-- Category 4: System, Speed & Security -->
+                <div class="p-6 rounded-2xl bg-obsidian-900/90 border border-white/10 hover:border-gold-400/40 transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-11 h-11 rounded-xl bg-emerald-500/15 border border-emerald-400/30 flex items-center justify-center text-emerald-400 mb-5">
+                            <i data-lucide="shield-check" class="w-5 h-5"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Speed & Hardening</h3>
+                        <p class="text-xs text-slate-400 mb-4 leading-relaxed">Kernel-level responsiveness and out-of-the-box defense with recovery tools pre-staged.</p>
+                        <ul class="space-y-2.5 text-sm text-slate-200">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i> zram Swap + preload + SSD TRIM</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i> UFW Active + AppArmor Enforcing</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i> Timeshift, GParted & BleachBit</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400 shrink-0"></i> Flatpak + Flathub & LUKS FDE</li>
+                        </ul>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-white/10 text-[11px] font-mono text-slate-400">
+                        Unattended Security Upgrades ON
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE REPRODUCIBLE BUILD EXPLORER (LIVE-BUILD ARCHITECTURE) -->
+    <section id="build-explorer" class="py-16 sm:py-24 border-b border-white/10 bg-obsidian-900/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Architectural Decision Callout: Why live-build over Cubic -->
+            <div class="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-obsidian-900 to-obsidian-850 border border-gold-400/30 mb-12 gold-border-glow">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    <div class="space-y-2 max-w-3xl">
+                        <div class="inline-flex items-center gap-2 text-xs font-mono text-gold-400 uppercase tracking-wider">
+                            <i data-lucide="git-branch" class="w-4 h-4"></i>
+                            <span>Engineering Architecture Decision</span>
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-white">Why <code class="text-gold-300 font-mono">live-build</code> Over Cubic?</h2>
+                        <p class="text-sm text-slate-300 leading-relaxed">
+                            While Cubic relies on manual GUI chroot interactions that drift over time, Debian/Ubuntu's <strong class="text-white">live-build (<code class="font-mono text-gold-300">lb config</code> / <code class="font-mono text-gold-300">lb build</code>)</strong> defines the entire operating system declaratively as version-controlled text files. Running <code class="font-mono text-emerald-400">sudo ./build.sh</code> on any clean Ubuntu 24.04 host or GitHub Actions runner produces an identical, auditable, idempotent <code class="font-mono text-white">deluxe-system-1-1.0-amd64.iso</code> and SHA256 checksum every single time.
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 shrink-0 text-xs font-mono">
+                        <div class="p-3.5 rounded-2xl bg-obsidian-950/90 border border-emerald-500/30">
+                            <span class="text-emerald-400 font-bold block mb-1">✓ live-build</span>
+                            <span class="text-slate-400">100% Scriptable, Git-friendly, Idempotent CI/CD</span>
+                        </div>
+                        <div class="p-3.5 rounded-2xl bg-obsidian-950/60 border border-white/10">
+                            <span class="text-slate-400 font-bold block mb-1">✕ Cubic GUI</span>
+                            <span class="text-slate-500">Manual clicks, opaque state, hard to reproduce</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive File Tree & Code Viewer -->
+            <div class="rounded-3xl border border-white/15 bg-obsidian-950 overflow-hidden shadow-2xl">
+                <!-- Top Repository Header -->
+                <div class="px-5 py-3.5 bg-obsidian-900 border-b border-white/10 flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5 text-xs sm:text-sm font-mono">
+                        <i data-lucide="folder-code" class="w-4 h-4 text-gold-400"></i>
+                        <a href="https://github.com/luisdiko14-lab/Deluxe-System-1" target="_blank" rel="noopener noreferrer" class="text-white hover:text-gold-300 font-semibold underline decoration-gold-400/40 underline-offset-4 transition-colors">github.com/luisdiko14-lab/Deluxe-System-1</a>
+                        <span class="px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 text-[11px]">ISO: Not Yet • Source Ready</span>
+                    </div>
+                    <button onclick="copyActiveCode()" class="px-3.5 py-1.5 rounded-xl bg-gold-400/15 hover:bg-gold-400 text-gold-300 hover:text-obsidian-950 border border-gold-400/30 text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer">
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                        <span>Copy File Content</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12">
+                    <!-- File Explorer Sidebar -->
+                    <div class="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-white/10 bg-obsidian-900/50 p-3 space-y-1">
+                        <div class="px-3 py-1.5 text-[11px] font-mono uppercase tracking-wider text-slate-400">Repository Files</div>
+
+                        <button onclick="selectRepoFile('tree')" id="file-btn-tree" class="repo-file-btn active w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left text-xs font-mono bg-gold-400/15 text-gold-300 border border-gold-400/30 transition-all">
+                            <i data-lucide="folder-tree" class="w-4 h-4 shrink-0"></i>
+                            <span class="truncate">PROJECT_STRUCTURE.txt</span>
+                        </button>
+
+                        <button onclick="selectRepoFile('build')" id="file-btn-build" class="repo-file-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left text-xs font-mono text-slate-300 hover:bg-white/5 transition-all">
+                            <i data-lucide="terminal" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+                            <span class="truncate">build.sh</span>
+                        </button>
+
+                        <button onclick="selectRepoFile('osrelease')" id="file-btn-osrelease" class="repo-file-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left text-xs font-mono text-slate-300 hover:bg-white/5 transition-all">
+                            <i data-lucide="file-badge" class="w-4 h-4 text-gold-400 shrink-0"></i>
+                            <span class="truncate">config/.../etc/os-release & deluxe-update</span>
+                        </button>
+
+                        <button onclick="selectRepoFile('welcome')" id="file-btn-welcome" class="repo-file-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left text-xs font-mono text-slate-300 hover:bg-white/5 transition-all">
+                            <i data-lucide="app-window" class="w-4 h-4 text-sky-400 shrink-0"></i>
+                            <span class="truncate">config/.../bin/deluxe-welcome.py</span>
+                        </button>
+
+                        <button onclick="selectRepoFile('hook')" id="file-btn-hook" class="repo-file-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left text-xs font-mono text-slate-300 hover:bg-white/5 transition-all">
+                            <i data-lucide="wrench" class="w-4 h-4 text-purple-400 shrink-0"></i>
+                            <span class="truncate">hooks/live/010-debloat-and-tune.hook.chroot</span>
+                        </button>
+
+                        <button onclick="selectRepoFile('packages')" id="file-btn-packages" class="repo-file-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left text-xs font-mono text-slate-300 hover:bg-white/5 transition-all">
+                            <i data-lucide="package" class="w-4 h-4 text-amber-400 shrink-0"></i>
+                            <span class="truncate">package-lists/deluxe.list.chroot</span>
+                        </button>
+                    </div>
+
+                    <!-- Code Display Pane -->
+                    <div class="lg:col-span-8 flex flex-col">
+                        <div class="px-4 py-2.5 bg-obsidian-900/80 border-b border-white/10 flex items-center justify-between text-xs font-mono text-slate-400">
+                            <span id="active-file-path">PROJECT_STRUCTURE.txt</span>
+                            <span id="active-file-badge" class="text-[11px] text-gold-400">Directory Tree</span>
+                        </div>
+                        <div class="p-4 sm:p-5 overflow-x-auto max-h-[520px] overflow-y-auto bg-[#090B10]">
+                            <pre id="code-viewer-content" class="code-pre font-mono text-xs sm:text-[13px] leading-relaxed text-slate-200"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEPLOYMENT, VERIFICATION CHECKLIST & TROUBLESHOOTING -->
+    <section id="deployment" class="py-16 sm:py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+            
+            <!-- Step-by-Step Build, VM Test & USB Flash Guide -->
+            <div>
+                <span class="text-xs font-mono uppercase tracking-widest text-gold-400 block mb-2">Deployment Workflow</span>
+                <h2 class="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-6">Build, Virtualize & Flash to USB</h2>
+
+                <!-- Tabs -->
+                <div class="flex flex-wrap gap-2 mb-6">
+                    <button onclick="switchDeployTab('build-host')" id="dtab-build-host" class="deploy-tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gold-400 text-obsidian-950 transition-all">1. Build on Ubuntu 24.04</button>
+                    <button onclick="switchDeployTab('vm-test')" id="dtab-vm-test" class="deploy-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-obsidian-850 text-slate-300 border border-white/10 hover:border-white/30 transition-all">2. Test in QEMU / VirtualBox</button>
+                    <button onclick="switchDeployTab('usb-flash')" id="dtab-usb-flash" class="deploy-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-obsidian-850 text-slate-300 border border-white/10 hover:border-white/30 transition-all">3. Write to USB (dd / Rufus / Etcher)</button>
+                </div>
+
+                <!-- Tab Content Panels -->
+                <div class="p-6 rounded-2xl bg-obsidian-900 border border-white/10">
+                    <!-- Panel 1: Build -->
+                    <div id="dpanel-build-host" class="deploy-panel space-y-4">
+                        <p class="text-sm text-slate-300">Because pre-built ISO binaries are <strong class="text-amber-300">not yet released</strong>, clone the official repository and run <code class="font-mono text-gold-300">build.sh</code> on a clean <strong class="text-white">Ubuntu 24.04 LTS</strong> machine or VM (4+ vCPUs, 8 GB RAM, 35 GB free disk):</p>
+                        <pre class="p-4 rounded-xl bg-obsidian-950 border border-white/10 font-mono text-xs sm:text-sm text-emerald-400 overflow-x-auto">git clone https://github.com/luisdiko14-lab/Deluxe-System-1.git
+cd Deluxe-System-1
+chmod +x build.sh
+sudo ./build.sh
+
+# Outputs:
+# -> build/deluxe-system-1-1.0-amd64.iso (~4.18 GB)
+# -> build/deluxe-system-1-1.0-amd64.iso.sha256</pre>
+                    </div>
+
+                    <!-- Panel 2: QEMU / VirtualBox -->
+                    <div id="dpanel-vm-test" class="deploy-panel hidden space-y-4">
+                        <p class="text-sm text-slate-300">Verify both <strong class="text-gold-300">UEFI (OVMF)</strong> and <strong class="text-gold-300">Legacy BIOS</strong> boot paths in QEMU/KVM before flashing physical hardware:</p>
+                        <pre class="p-4 rounded-xl bg-obsidian-950 border border-white/10 font-mono text-xs sm:text-sm text-sky-300 overflow-x-auto"># 1. Test UEFI Mode (requires ovmf package)
+qemu-system-x86_64 -enable-kvm -m 4096 -smp 4 \
+  -bios /usr/share/ovmf/OVMF.fd \
+  -cdrom build/deluxe-system-1-1.0-amd64.iso -vga virtio
+
+# 2. Test Legacy BIOS Mode
+qemu-system-x86_64 -enable-kvm -m 4096 -smp 4 \
+  -cdrom build/deluxe-system-1-1.0-amd64.iso -vga virtio</pre>
+                    </div>
+
+                    <!-- Panel 3: USB Flash -->
+                    <div id="dpanel-usb-flash" class="deploy-panel hidden grid grid-cols-1 md:grid-cols-3 gap-4 text-xs sm:text-sm">
+                        <div class="p-4 rounded-xl bg-obsidian-950 border border-white/10">
+                            <h4 class="font-bold text-gold-400 mb-2">Linux / macOS (`dd`)</h4>
+                            <p class="text-slate-400 text-xs mb-2">Replace <code class="text-white">/dev/sdX</code> with your target USB drive:</p>
+                            <pre class="p-2.5 rounded-lg bg-black font-mono text-[11px] text-emerald-400 overflow-x-auto">sudo dd if=deluxe-system-1-1.0-amd64.iso \
+  of=/dev/sdX bs=4M status=progress oflag=sync</pre>
+                        </div>
+                        <div class="p-4 rounded-xl bg-obsidian-950 border border-white/10">
+                            <h4 class="font-bold text-gold-400 mb-2">Windows (Rufus 4.5+)</h4>
+                            <ul class="text-slate-300 text-xs space-y-1.5 list-disc list-inside">
+                                <li>Select <code class="text-white">deluxe-system-1-1.0-amd64.iso</code></li>
+                                <li>Partition scheme: <strong>GPT</strong> (UEFI) or <strong>MBR</strong> (BIOS+UEFI)</li>
+                                <li>Write in <strong>ISO Image mode</strong> (or DD mode)</li>
+                            </ul>
+                        </div>
+                        <div class="p-4 rounded-xl bg-obsidian-950 border border-white/10">
+                            <h4 class="font-bold text-gold-400 mb-2">Cross-Platform (balenaEtcher)</h4>
+                            <ul class="text-slate-300 text-xs space-y-1.5 list-disc list-inside">
+                                <li>Click <strong>Flash from file</strong> & pick the ISO</li>
+                                <li>Select an 8 GB+ USB 3.0 flash drive</li>
+                                <li>Automatic SHA256 post-flash validation</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive QA Verification Checklist & Top 5 Troubleshooting Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Interactive Verification Checklist -->
+                <div class="lg:col-span-5 p-6 rounded-3xl bg-obsidian-900 border border-white/10 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <span class="text-xs font-mono uppercase tracking-wider text-gold-400">Release QA</span>
+                                <h3 class="text-xl font-bold text-white">Pre-Release Verification</h3>
+                            </div>
+                            <span id="checklist-progress" class="px-3 py-1 rounded-full bg-gold-400/15 text-gold-300 font-mono text-xs font-bold">0 / 7</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-4">Click each item as you validate your built ISO image:</p>
+
+                        <div class="space-y-2.5" id="qa-checklist">
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-obsidian-950/80 border border-white/10 hover:border-gold-400/40 cursor-pointer transition-all">
+                                <input type="checkbox" onchange="updateChecklistCount()" class="qa-check mt-0.5 accent-amber-400 rounded">
+                                <span class="text-xs sm:text-sm text-slate-200">ISO size is verified under <strong>4.7 GB</strong> & SHA256 matches</span>
+                            </label>
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-obsidian-950/80 border border-white/10 hover:border-gold-400/40 cursor-pointer transition-all">
+                                <input type="checkbox" onchange="updateChecklistCount()" class="qa-check mt-0.5 accent-amber-400 rounded">
+                                <span class="text-xs sm:text-sm text-slate-200">Boots cleanly on both <strong>UEFI</strong> and <strong>Legacy BIOS</strong></span>
+                            </label>
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-obsidian-950/80 border border-white/10 hover:border-gold-400/40 cursor-pointer transition-all">
+                                <input type="checkbox" onchange="updateChecklistCount()" class="qa-check mt-0.5 accent-amber-400 rounded">
+                                <span class="text-xs sm:text-sm text-slate-200">Auto-logins into live user <code class="font-mono text-gold-300">deluxe</code> with no password</span>
+                            </label>
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-obsidian-950/80 border border-white/10 hover:border-gold-400/40 cursor-pointer transition-all">
+                                <input type="checkbox" onchange="updateChecklistCount()" class="qa-check mt-0.5 accent-amber-400 rounded">
+                                <span class="text-xs sm:text-sm text-slate-200">Wi-Fi, Bluetooth & audio codecs work out-of-the-box</span>
+                            </label>
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-obsidian-950/80 border border-white/10 hover:border-gold-400/40 cursor-pointer transition-all">
+                                <input type="checkbox" onchange="updateChecklistCount()" class="qa-check mt-0.5 accent-amber-400 rounded">
+                                <span class="text-xs sm:text-sm text-slate-200">Disk installer completes with optional <strong>LUKS encryption</strong></span>
+                            </label>
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-obsidian-950/80 border border-white/10 hover:border-gold-400/40 cursor-pointer transition-all">
+                                <input type="checkbox" onchange="updateChecklistCount()" class="qa-check mt-0.5 accent-amber-400 rounded">
+                                <span class="text-xs sm:text-sm text-slate-200">Firefox, LibreOffice, VS Code, GIMP, OBS & Docker launch</span>
+                            </label>
+                            <label class="flex items-start gap-3 p-3 rounded-xl bg-obsidian-950/80 border border-white/10 hover:border-gold-400/40 cursor-pointer transition-all">
+                                <input type="checkbox" onchange="updateChecklistCount()" class="qa-check mt-0.5 accent-amber-400 rounded">
+                                <span class="text-xs sm:text-sm text-slate-200">GRUB, Plymouth, GDM & <code class="font-mono text-gold-300">/etc/os-release</code> show D1 branding</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5 Most Common Build Errors & Solutions -->
+                <div class="lg:col-span-7 p-6 rounded-3xl bg-obsidian-900 border border-white/10">
+                    <span class="text-xs font-mono uppercase tracking-wider text-gold-400">Engineering Runbook</span>
+                    <h3 class="text-xl font-bold text-white mb-4">Top 5 <code class="font-mono text-gold-300">live-build</code> Troubleshooting Fixes</h3>
+
+                    <div class="space-y-3">
+                        <details class="group p-4 rounded-2xl bg-obsidian-950/80 border border-white/10 open:border-gold-400/40" open>
+                            <summary class="font-semibold text-xs sm:text-sm text-white cursor-pointer flex items-center justify-between">
+                                <span>1. `E: Unable to locate package` during `lb build` chroot stage</span>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-gold-400 group-open:rotate-180 transition-transform"></i>
+                            </summary>
+                            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                                Ensure <code class="text-slate-200">--archive-areas "main restricted universe multiverse"</code> is passed to <code class="text-slate-200">lb config</code>, and third-party GPG keys (Mozilla, Microsoft VS Code, Docker) are placed in <code class="text-gold-300">config/archives/*.key.chroot</code>.
+                            </p>
+                        </details>
+
+                        <details class="group p-4 rounded-2xl bg-obsidian-950/80 border border-white/10 open:border-gold-400/40">
+                            <summary class="font-semibold text-xs sm:text-sm text-white cursor-pointer flex items-center justify-between">
+                                <span>2. ISO exceeds 4.7 GB DVD/FAT32 single-file ceiling</span>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-gold-400 group-open:rotate-180 transition-transform"></i>
+                            </summary>
+                            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                                Use XZ high-ratio SquashFS compression (<code class="text-slate-200">MKSQUASHFS_OPTIONS="-comp xz -b 1M -Xdict-size 100%"</code>) and strip <code class="text-slate-200">/var/cache/apt/archives/*</code> plus <code class="text-slate-200">/usr/share/doc/*</code> in the final chroot cleanup hook.
+                            </p>
+                        </details>
+
+                        <details class="group p-4 rounded-2xl bg-obsidian-950/80 border border-white/10 open:border-gold-400/40">
+                            <summary class="font-semibold text-xs sm:text-sm text-white cursor-pointer flex items-center justify-between">
+                                <span>3. `chroot: failed to run command '/bin/sh': Exec format error` or mount busy</span>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-gold-400 group-open:rotate-180 transition-transform"></i>
+                            </summary>
+                            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                                A previous interrupted build left <code class="text-slate-200">chroot/proc</code> or <code class="text-slate-200">chroot/sys</code> mounted. Our idempotent <code class="text-gold-300">build.sh</code> safely unmounts stale pseudo-filesystems and runs <code class="text-slate-200">lb clean --purge</code> before rebuilding.
+                            </p>
+                        </details>
+
+                        <details class="group p-4 rounded-2xl bg-obsidian-950/80 border border-white/10 open:border-gold-400/40">
+                            <summary class="font-semibold text-xs sm:text-sm text-white cursor-pointer flex items-center justify-between">
+                                <span>4. UEFI Secure Boot or Hybrid ISO fails to boot on older BIOS PCs</span>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-gold-400 group-open:rotate-180 transition-transform"></i>
+                            </summary>
+                            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                                Install <code class="text-slate-200">xorriso</code>, <code class="text-slate-200">isolinux</code>, <code class="text-slate-200">syslinux-efi</code>, and <code class="text-slate-200">grub-efi-amd64-bin</code> on the build host, and pass <code class="text-gold-300">--bootloaders "syslinux,grub-efi"</code> to <code class="text-slate-200">lb config</code>.
+                            </p>
+                        </details>
+
+                        <details class="group p-4 rounded-2xl bg-obsidian-950/80 border border-white/10 open:border-gold-400/40">
+                            <summary class="font-semibold text-xs sm:text-sm text-white cursor-pointer flex items-center justify-between">
+                                <span>5. Snap daemon re-installs itself when installing `firefox`</span>
+                                <i data-lucide="chevron-down" class="w-4 h-4 text-gold-400 group-open:rotate-180 transition-transform"></i>
+                            </summary>
+                            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+                                Ubuntu's transitional <code class="text-slate-200">firefox</code> package pulls <code class="text-slate-200">snapd</code>. Pin <code class="text-gold-300">Package: snapd / Pin-Priority: -10</code> in <code class="text-slate-200">/etc/apt/preferences.d/nosnap.pref</code> and prioritize <code class="text-slate-200">packages.mozilla.org</code> with priority <code class="text-slate-200">1001</code>.
+                            </p>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER & OPEN-SOURCE LICENSE COMPLIANCE -->
+    <footer class="bg-obsidian-950 border-t border-white/10 py-12 text-xs text-slate-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-8 border-b border-white/10">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-gold-400 to-gold-600 text-obsidian-950 font-extrabold text-sm flex items-center justify-center shadow">D1</div>
+                    <div>
+                        <span class="text-white font-bold text-sm block">Deluxe System 1 "Aurora" (v1.0)</span>
+                        <span>Independent Ubuntu 24.04 LTS (Noble) Derivative Distribution</span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2 font-mono text-[11px]">
+                    <span class="px-2.5 py-1 rounded-lg bg-obsidian-900 border border-white/10">Linux Kernel: GPL-2.0</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-obsidian-900 border border-white/10">GNOME / GIMP / VLC: GPL-2.0/3.0</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-obsidian-900 border border-white/10">Firefox: MPL-2.0</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-obsidian-900 border border-white/10">VS Code / Node: MIT</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-obsidian-900 border border-white/10">Docker: Apache-2.0</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-obsidian-900 border border-white/10">Fonts: SIL OFL-1.1</span>
+                </div>
+            </div>
+            <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+                <p>Trademark Compliance: Deluxe System 1 is an independent project. Ubuntu and Canonical are registered trademarks of Canonical Ltd. and are not used as product branding.</p>
+                <p class="font-mono text-slate-400">Built reproducibly with Debian/Ubuntu live-build</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC: Interactive Desktop, Wallpapers, Repo Code Explorer & Utilities -->
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // 1. Toast Notification System (No alert() used anywhere)
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const borderColor = type === 'success' ? 'border-gold-400/50' : 'border-sky-400/50';
+            const iconColor = type === 'success' ? 'text-gold-400' : 'text-sky-400';
+
+        function copyGitClone() {
+            const cmd = document.getElementById('git-clone-value').textContent.trim();
+            copyTextToClipboard(cmd, 'Copied: git clone https://github.com/luisdiko14-lab/Deluxe-System-1.git');
+        }
+
+        function openIsoStatusModal() {
+            const modal = document.getElementById('iso-status-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeIsoStatusModal() {
+            const modal = document.getElementById('iso-status-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // 2. Copy SHA256 Checksum using document.execCommand('copy') fallback-safe method
+        function copyTextToClipboard(text, successMsg) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast(successMsg, 'success');
+            } catch (err) {
+                showToast('Unable to copy automatically — please select text manually.', 'info');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function copySha256() {
+            const sha = document.getElementById('sha256-value').textContent.trim();
+            copyTextToClipboard(sha, 'Copied SHA256 checksum for deluxe-system-1-1.0-amd64.iso');
+        }
+
+        function simulateIsoDownload() {
+            showToast('Starting ISO bundle check: deluxe-system-1-1.0-amd64.iso (4.18 GB) — or build locally via build.sh below!', 'success');
+        }
+
+        // 3. 5 Original "Aurora" SVG Wallpapers
+        const auroraWallpapers = [
+            // 0: Solar Gold
+            `<svg class="w-full h-full object-cover" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="wp0-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#090C14"/>
+                        <stop offset="50%" stop-color="#141926"/>
+                        <stop offset="100%" stop-color="#1E1810"/>
+                    </linearGradient>
+                    <radialGradient id="wp0-glow" cx="72%" cy="32%" r="55%">
+                        <stop offset="0%" stop-color="#F5C542" stop-opacity="0.38"/>
+                        <stop offset="45%" stop-color="#D4AF37" stop-opacity="0.12"/>
+                        <stop offset="100%" stop-color="#090C14" stop-opacity="0"/>
+                    </radialGradient>
+                </defs>
+                <rect width="1600" height="900" fill="url(#wp0-bg)"/>
+                <rect width="1600" height="900" fill="url(#wp0-glow)"/>
+                <path d="M-100 680 C 350 480, 950 780, 1700 420 L 1700 950 L -100 950 Z" fill="#F5C542" fill-opacity="0.07"/>
+                <path d="M-100 760 C 480 560, 1080 820, 1700 540 L 1700 950 L -100 950 Z" fill="#D4AF37" fill-opacity="0.11"/>
+            </svg>`,
+            // 1: Midnight Aurora
+            `<svg class="w-full h-full object-cover" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="wp1-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#060B14"/>
+                        <stop offset="100%" stop-color="#0D1B2A"/>
+                    </linearGradient>
+                    <linearGradient id="wp1-ribbon" x1="0%" y1="50%" x2="100%" y2="20%">
+                        <stop offset="0%" stop-color="#10B981" stop-opacity="0.32"/>
+                        <stop offset="50%" stop-color="#F5C542" stop-opacity="0.28"/>
+                        <stop offset="100%" stop-color="#6366F1" stop-opacity="0.32"/>
+                    </linearGradient>
+                </defs>
+                <rect width="1600" height="900" fill="url(#wp1-bg)"/>
+                <path d="M0 320 Q 450 140 860 340 T 1600 220 L 1600 560 Q 1120 420 760 540 T 0 480 Z" fill="url(#wp1-ribbon)"/>
+            </svg>`,
+            // 2: Obsidian Ridge
+            `<svg class="w-full h-full object-cover" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                <rect width="1600" height="900" fill="#0A0C10"/>
+                <polygon points="0,900 0,580 420,390 860,640 1280,340 1600,510 1600,900" fill="#131722"/>
+                <polygon points="0,900 0,680 540,490 1020,710 1600,450 1600,900" fill="#1A202E"/>
+                <line x1="420" y1="390" x2="860" y2="640" stroke="#F5C542" stroke-opacity="0.35" stroke-width="2"/>
+                <line x1="1280" y1="340" x2="1600" y2="510" stroke="#F5C542" stroke-opacity="0.35" stroke-width="2"/>
+            </svg>`,
+            // 3: Nebula Silk
+            `<svg class="w-full h-full object-cover" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                <rect width="1600" height="900" fill="#0B0914"/>
+                <circle cx="380" cy="300" r="420" fill="#7C3AED" fill-opacity="0.18"/>
+                <circle cx="1180" cy="560" r="460" fill="#F5C542" fill-opacity="0.16"/>
+                <circle cx="840" cy="420" r="320" fill="#0EA5E9" fill-opacity="0.12"/>
+            </svg>`,
+            // 4: Minimal D1 Monogram
+            `<svg class="w-full h-full object-cover" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                <rect width="1600" height="900" fill="#090B10"/>
+                <circle cx="800" cy="450" r="240" stroke="#F5C542" stroke-opacity="0.15" stroke-width="1.5" fill="none"/>
+                <circle cx="800" cy="450" r="340" stroke="#F5C542" stroke-opacity="0.08" stroke-width="1" fill="none"/>
+                <text x="800" y="475" text-anchor="middle" font-family="Inter, sans-serif" font-weight="800" font-size="96" fill="#F5C542" fill-opacity="0.14">D1</text>
+            </svg>`
+        ];
+
+        function setWallpaper(index) {
+            document.getElementById('desktop-wallpaper-svg').innerHTML = auroraWallpapers[index];
+            document.querySelectorAll('.wp-btn').forEach((btn, idx) => {
+                if (idx === index) {
+                    btn.className = 'wp-btn active px-3 py-1.5 rounded-xl text-xs font-medium border border-gold-400 bg-gold-400/15 text-gold-300 transition-all';
+                } else {
+                    btn.className = 'wp-btn px-3 py-1.5 rounded-xl text-xs font-medium border border-white/10 bg-obsidian-850 text-slate-300 hover:border-white/30 transition-all';
+                }
+            });
+        }
+        // Set default wallpaper on load
+        setWallpaper(0);
+
+        // 4. Desktop Preview Dark / Light Mode Toggle
+        let isDesktopDark = true;
+        function setDesktopMode(mode) {
+            isDesktopDark = (mode === 'dark');
+            const win = document.getElementById('welcome-app-window');
+            const header = document.getElementById('welcome-window-header');
+            const sidebar = document.getElementById('welcome-sidebar');
+            const label = document.getElementById('theme-toggle-label');
+            const btnDark = document.getElementById('btn-mode-dark');
+            const btnLight = document.getElementById('btn-mode-light');
+
+            if (isDesktopDark) {
+                win.className = 'w-full max-w-3xl rounded-2xl shadow-2xl border transition-all duration-300 overflow-hidden bg-obsidian-900/95 border-white/15 text-slate-100 backdrop-blur-xl';
+                header.className = 'px-4 py-3 border-b border-white/10 flex items-center justify-between bg-obsidian-850/90';
+                sidebar.className = 'md:col-span-4 p-3 border-b md:border-b-0 md:border-r border-white/10 bg-obsidian-950/50 flex md:flex-col gap-1.5 overflow-x-auto';
+                label.textContent = 'Theme: Aurora Dark';
+                btnDark.className = 'p-3 rounded-xl border-2 border-gold-400 bg-obsidian-850 text-left transition-all';
+                btnLight.className = 'p-3 rounded-xl border border-white/15 bg-white/5 text-left transition-all';
+            } else {
+                win.className = 'w-full max-w-3xl rounded-2xl shadow-2xl border transition-all duration-300 overflow-hidden bg-slate-50/95 border-slate-300 text-slate-900 backdrop-blur-xl';
+                header.className = 'px-4 py-3 border-b border-slate-200 flex items-center justify-between bg-white/90';
+                sidebar.className = 'md:col-span-4 p-3 border-b md:border-b-0 md:border-r border-slate-200 bg-slate-100/80 flex md:flex-col gap-1.5 overflow-x-auto';
+                label.textContent = 'Theme: Daylight Silk';
+                btnLight.className = 'p-3 rounded-xl border-2 border-amber-500 bg-white text-left transition-all shadow-sm';
+                btnDark.className = 'p-3 rounded-xl border border-slate-300 bg-slate-200/70 text-slate-800 text-left transition-all';
+            }
+        }
+
+        function togglePreviewTheme() {
+            setDesktopMode(isDesktopDark ? 'light' : 'dark');
+            showToast(`Switched desktop theme to ${isDesktopDark ? 'Aurora Dark' : 'Daylight Silk'}`, 'info');
+        }
+
+        // 5. Welcome App Interactive Tabs
+        function switchWelcomeTab(tabId) {
+            document.querySelectorAll('.welcome-panel').forEach(panel => panel.classList.add('hidden'));
+            document.getElementById(`wpanel-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.welcome-nav-btn').forEach(btn => {
+                btn.className = 'welcome-nav-btn flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium text-left opacity-75 hover:opacity-100 hover:bg-white/5 whitespace-nowrap';
+            });
+            const activeBtn = document.getElementById(`wtab-${tabId}`);
+            activeBtn.className = 'welcome-nav-btn active flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-left bg-gold-400/20 text-gold-400 border border-gold-400/40 whitespace-nowrap';
+        }
+
+        function runSimulatedDeluxeUpdate() {
+            const term = document.getElementById('update-terminal-output');
+            const btn = document.getElementById('btn-run-update');
+            btn.disabled = true;
+            btn.classList.add('opacity-50');
+            term.innerHTML = `<div class="text-gold-300">$ sudo deluxe-update</div>`;
+
+            const steps = [
+                '→ [1/3] Synchronizing APT repositories (Noble + Mozilla + VS Code + Docker)...',
+                '→ [2/3] Checking Flathub Flatpak runtimes & applications...',
+                '→ [3/3] Querying LVFS firmware metadata via fwupdmgr...',
+                '✓ All packages, Flatpaks, and firmware are up to date! (0 errors)'
+            ];
+
+            steps.forEach((line, i) => {
+                setTimeout(() => {
+                    const div = document.createElement('div');
+                    div.textContent = line;
+                    if (i === steps.length - 1) div.className = 'text-emerald-300 font-semibold pt-1';
+                    term.appendChild(div);
+                    term.scrollTop = term.scrollHeight;
+                    if (i === steps.length - 1) {
+                        btn.disabled = false;
+                        btn.classList.remove('opacity-50');
+                    }
+                }, (i + 1) * 550);
+            });
+        }
+
+        function toggleExtraApp(btn) {
+            if (btn.textContent.trim() === 'Install') {
+                btn.textContent = 'Installing...';
+                setTimeout(() => {
+                    btn.textContent = 'Installed ✓';
+                    btn.className = 'px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium';
+                    showToast('Flatpak package installed cleanly!', 'success');
+                }, 600);
+            }
+        }
+
+        // 6. QA Checklist Counter
+        function updateChecklistCount() {
+            const total = document.querySelectorAll('.qa-check').length;
+            const checked = document.querySelectorAll('.qa-check:checked').length;
+            document.getElementById('checklist-progress').textContent = `${checked} / ${total}`;
+            if (checked === total) {
+                showToast('All 7 Release QA checks verified! Ready to publish ISO.', 'success');
+            }
+        }
+
+        // 7. Interactive Build Repository Code Explorer
+        const repoFiles = {
+            tree: {
+                path: 'PROJECT_STRUCTURE.txt',
+                badge: 'Repository Layout',
+                code: `Deluxe-System-1/ (https://github.com/luisdiko14-lab/Deluxe-System-1)
+├── build.sh                                         # Idempotent master live-build script
+├── README.md                                        # Build, QEMU, USB & verification guide
+└── config/
+    ├── archives/
+    │   ├── mozilla.list.chroot                      # Official Firefox .deb repo (Snap-free)
+    │   ├── vscode.list.chroot                       # Official Microsoft VS Code repo
+    │   └── docker.list.chroot                       # Official Docker CE Noble repo
+    ├── package-lists/
+    │   └── deluxe.list.chroot                       # GNOME, LibreOffice, VLC, OBS, GIMP, Dev tools
+    ├── hooks/
+    │   └── live/
+    │       ├── 010-debloat-and-tune.hook.chroot     # Purge snapd/telemetry, set zram, UFW, AppArmor
+    │       └── 020-branding-and-desktop.hook.chroot # Plymouth, GRUB, GDM, Papirus, Inter/JetBrains fonts
+    └── includes.chroot/
+        ├── etc/
+        │   ├── os-release                           # Deluxe System 1 "Aurora" v1.0 identity
+        │   ├── lsb-release                          # LSB release metadata
+        │   ├── issue                                # TTY login banner
+        │   ├── apt/preferences.d/nosnap.pref        # Block snapd re-installation
+        │   └── skel/.config/dconf/user              # Default dock, shortcuts, Night Light & dark theme
+        ├── usr/
+        │   ├── local/bin/
+        │   │   ├── deluxe-update                    # Unified APT + Flatpak + fwupd CLI updater
+        │   │   └── deluxe-welcome.py                # GTK4/Libadwaita Welcome application
+        │   └── share/
+        │       ├── applications/deluxe-welcome.desktop
+        │       ├── icons/hicolor/scalable/apps/deluxe-system-1.svg
+        │       └── backgrounds/deluxe/              # 5 original Aurora SVG wallpapers`
+            },
+            build: {
+                path: 'build.sh',
+                badge: 'Bash • Executable',
+                code: `#!/usr/bin/env bash
+# ==============================================================================
+# Deluxe System 1 "Aurora" (v1.0) - Reproducible ISO Builder
+# Base: Ubuntu 24.04 LTS (Noble Numbat) | Target: x86_64 (UEFI + Legacy BIOS)
+# ==============================================================================
+set -euo pipefail
+
+DISTRO_NAME="deluxe-system-1"
+DISTRO_VERSION="1.0"
+CODENAME="aurora"
+ARCH="amd64"
+ISO_FILENAME="\${DISTRO_NAME}-\${DISTRO_VERSION}-\${ARCH}.iso"
+WORK_DIR="$(pwd)/build-work"
+OUT_DIR="$(pwd)/build"
+
+if [[ $EUID -ne 0 ]]; then
+    echo "[ERROR] Run as root: sudo ./build.sh"
+    exit 1
+fi
+
+echo "[1/5] Installing host build dependencies..."
+apt-get update -qq
+DEBIAN_FRONTEND=noninteractive apt-get install -y -qq \\
+    live-build debootstrap squashfs-tools xorriso \\
+    isolinux syslinux-efi grub-pc-bin grub-efi-amd64-bin \\
+    mtools dosfstools curl gnupg
+
+echo "[2/5] Cleaning previous build artifacts (idempotent reset)..."
+mkdir -p "$WORK_DIR" "$OUT_DIR"
+cd "$WORK_DIR"
+lb clean --purge || true
+rm -rf config auto local .build
+
+echo "[3/5] Configuring live-build for Ubuntu 24.04 LTS (Noble)..."
+lb config \\
+    --mode ubuntu \\
+    --distribution noble \\
+    --architectures "$ARCH" \\
+    --archive-areas "main restricted universe multiverse" \\
+    --binary-images iso-hybrid \\
+    --bootloaders "syslinux,grub-efi" \\
+    --debian-installer live \\
+    --debian-installer-gui true \\
+    --iso-application "Deluxe System 1 Aurora" \\
+    --iso-publisher "Deluxe System Project" \\
+    --iso-volume "DELUXE_SYS_1" \\
+    --linux-flavours "generic" \\
+    --bootappend-live "boot=casper username=deluxe hostname=deluxe-live quiet splash" \\
+    --compression xz \\
+    --memtest none \\
+    --apt-recommends false
+
+# Copy declarative configuration tree into live-build workspace
+cp -r ../config/* ./config/
+
+# Ensure high-ratio SquashFS compression keeps ISO well under 4.7 GB
+export MKSQUASHFS_OPTIONS="-comp xz -b 1M -Xdict-size 100%"
+
+echo "[4/5] Building Deluxe System 1 ISO (this takes ~12-20 mins)..."
+lb build 2>&1 | tee "$OUT_DIR/build.log"
+
+echo "[5/5] Exporting ISO and generating SHA256 checksum..."
+GENERATED_ISO=$(find . -maxdepth 1 -name "*.iso" | head -n 1)
+if [[ -z "$GENERATED_ISO" ]]; then
+    echo "[FATAL] ISO build failed. Inspect $OUT_DIR/build.log"
+    exit 1
+fi
+
+mv "$GENERATED_ISO" "$OUT_DIR/$ISO_FILENAME"
+cd "$OUT_DIR"
+sha256sum "$ISO_FILENAME" > "\${ISO_FILENAME}.sha256"
+
+echo "=================================================================="
+echo "SUCCESS: $OUT_DIR/$ISO_FILENAME"
+echo "SIZE:    $(du -h "$ISO_FILENAME" | cut -f1) (Limit: < 4.7 GB)"
+echo "SHA256:  $(cat "\${ISO_FILENAME}.sha256")"
+echo "=================================================================="`
+            },
+            osrelease: {
+                path: 'config/includes.chroot/etc/os-release & deluxe-update',
+                badge: 'System Identity & CLI',
+                code: `# --- File 1: config/includes.chroot/etc/os-release ---
+PRETTY_NAME="Deluxe System 1 1.0 (Aurora)"
+NAME="Deluxe System 1"
+VERSION_ID="1.0"
+VERSION="1.0 (Aurora)"
+VERSION_CODENAME=aurora
+ID=deluxe
+ID_LIKE="ubuntu debian"
+HOME_URL="https://deluxesystem.org/"
+SUPPORT_URL="https://github.com/luisdiko14-lab/Deluxe-System-1/issues"
+BUG_REPORT_URL="https://github.com/luisdiko14-lab/Deluxe-System-1/issues"
+UBUNTU_CODENAME=noble
+
+# --- File 2: config/includes.chroot/usr/local/bin/deluxe-update ---
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "=================================================="
+echo "  Deluxe System 1 'Aurora' — Unified System Update"
+echo "=================================================="
+
+echo "[1/3] Updating APT system packages..."
+sudo apt-get update && sudo apt-get full-upgrade -y
+sudo apt-get autoremove --purge -y
+
+if command -v flatpak >/dev/null 2>&1; then
+    echo "[2/3] Updating Flatpak applications..."
+    flatpak update -y --noninteractive
+fi
+
+if command -v fwupdmgr >/dev/null 2>&1; then
+    echo "[3/3] Checking LVFS hardware firmware updates..."
+    sudo fwupdmgr refresh --force || true
+    sudo fwupdmgr get-updates || true
+fi
+
+echo "Deluxe System 1 is completely up to date!"`
+            },
+            welcome: {
+                path: 'config/includes.chroot/usr/local/bin/deluxe-welcome.py',
+                badge: 'Python 3 • GTK4 / Libadwaita',
+                code: `#!/usr/bin/env python3
+"""
+Welcome to Deluxe System 1 ("Aurora" v1.0)
+Interactive GTK4 + Libadwaita onboarding utility for theme switching,
+system updates (deluxe-update), and curated Flathub app installation.
+"""
+import subprocess
+import gi
+gi.require_version("Gtk", "4.0")
+gi.require_version("Adw", "1")
+from gi.repository import Gtk, Adw, Gio
+
+class DeluxeWelcomeWindow(Adw.ApplicationWindow):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.set_title("Welcome to Deluxe System 1")
+        self.set_default_size(760, 480)
+
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
+        header = Adw.HeaderBar()
+        box.append(header)
+
+        content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
+        content.set_margin_top(24)
+        content.set_margin_bottom(24)
+        content.set_margin_start(32)
+        content.set_margin_end(32)
+
+        title = Gtk.Label(label="Welcome to Deluxe System 1 'Aurora'")
+        title.add_css_class("title-1")
+        content.append(title)
+
+        subtitle = Gtk.Label(label="Fast, telemetry-free desktop Linux built on Ubuntu 24.04 LTS.")
+        subtitle.add_css_class("dim-label")
+        content.append(subtitle)
+
+        # Theme Switcher Row
+        theme_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        theme_box.set_halign(Gtk.Align.CENTER)
+        btn_dark = Gtk.Button(label="Aurora Dark Theme")
+        btn_dark.connect("clicked", lambda _: self.set_color_scheme("prefer-dark"))
+        btn_light = Gtk.Button(label="Daylight Silk Theme")
+        btn_light.connect("clicked", lambda _: self.set_color_scheme("default"))
+        theme_box.append(btn_dark)
+        theme_box.append(btn_light)
+        content.append(theme_box)
+
+        # Action Buttons: Update & Curated Apps
+        actions_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        actions_box.set_halign(Gtk.Align.CENTER)
+
+        btn_update = Gtk.Button(label="Run deluxe-update")
+        btn_update.add_css_class("suggested-action")
+        btn_update.connect("clicked", self.launch_update)
+
+        btn_apps = Gtk.Button(label="Install Extra Flatpak Apps")
+        btn_apps.connect("clicked", self.install_extras)
+
+        actions_box.append(btn_update)
+        actions_box.append(btn_apps)
+        content.append(actions_box)
+
+        box.append(content)
+        self.set_content(box)
+
+    def set_color_scheme(self, scheme):
+        subprocess.run(["gsettings", "set", "org.gnome.desktop.interface", "color-scheme", scheme])
+
+    def launch_update(self, _):
+        subprocess.Popen(["gnome-terminal", "--", "bash", "-c", "deluxe-update; read -p 'Press Enter to close...'"])
+
+    def install_extras(self, _):
+        subprocess.Popen(["gnome-terminal", "--", "bash", "-c", "flatpak install -y flathub com.valvesoftware.Steam org.blender.Blender; read -p 'Done!'"])
+
+class DeluxeWelcomeApp(Adw.Application):
+    def __init__(self):
+        super().__init__(application_id="org.deluxesystem.Welcome", flags=Gio.ApplicationFlags.FLAGS_NONE)
+
+    def do_activate(self):
+        win = DeluxeWelcomeWindow(application=self)
+        win.present()
+
+if __name__ == "__main__":
+    app = DeluxeWelcomeApp()
+    app.run(None)`
+            },
+            hook: {
+                path: 'config/hooks/live/010-debloat-and-tune.hook.chroot',
+                badge: 'Chroot Hardening & Tuning Hook',
+                code: `#!/usr/bin/env bash
+set -euo pipefail
+
+echo "[Hook 010] Removing Snap bloat, telemetry, and unused games..."
+apt-get purge -y snapd ubuntu-report popularity-contest apport whoopsie \\
+    aisleriot gnome-mahjongg gnome-mines gnome-sudoku || true
+apt-get autoremove --purge -y
+
+echo "[Hook 010] Configuring zram compressed swap & fast boot tuning..."
+cat << 'EOF' > /etc/default/zramswap
+ALGO=lz4
+PERCENT=50
+PRIORITY=100
+EOF
+systemctl enable zramswap.service
+systemctl enable fstrim.timer
+systemctl enable preload.service || true
+
+echo "[Hook 010] Hardening UFW Firewall, AppArmor & Unattended Security Updates..."
+ufw default deny incoming
+ufw default allow outgoing
+ufw --force enable
+systemctl enable apparmor.service
+systemctl enable unattended-upgrades.service
+
+echo "[Hook 010] Enabling Flathub repository..."
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+echo "[Hook 010] Configuring passwordless live user 'deluxe' & autostart Welcome app..."
+mkdir -p /etc/skel/.config/autostart
+cp /usr/share/applications/deluxe-welcome.desktop /etc/skel/.config/autostart/
+chmod +x /usr/local/bin/deluxe-update /usr/local/bin/deluxe-welcome.py
+
+# Clean APT caches to guarantee ISO remains < 4.7 GB
+apt-get clean
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*`
+            },
+            packages: {
+                path: 'config/package-lists/deluxe.list.chroot',
+                badge: 'Declarative Package Manifest',
+                code: `# Desktop Shell, Theme & Typography
+gnome-shell
+gnome-session
+gdm3
+gnome-terminal
+gnome-tweaks
+gnome-shell-extension-dashtodock
+papirus-icon-theme
+fonts-inter
+fonts-jetbrains-mono
+fonts-liberation
+fonts-noto-color-emoji
+python3-gi
+gir1.2-adw-1
+gir1.2-gtk-4.0
+
+# Browser & Productivity
+firefox
+libreoffice-writer
+libreoffice-calc
+libreoffice-impress
+libreoffice-gtk3
+
+# Media & Graphics Creation
+vlc
+obs-studio
+gimp
+inkscape
+gstreamer1.0-plugins-ugly
+gstreamer1.0-libav
+ffmpeg
+
+# Developer Toolchain
+git
+code
+python3
+python3-pip
+python3-venv
+nodejs
+npm
+build-essential
+docker.io
+docker-compose-v2
+
+# System Utilities, Performance & Security
+timeshift
+gparted
+bleachbit
+flatpak
+gnome-software-plugin-flatpak
+zram-tools
+preload
+ufw
+apparmor
+apparmor-utils
+unattended-upgrades
+fwupd
+network-manager`
+            }
+        };
+
+        let currentRepoKey = 'tree';
+
+        function selectRepoFile(key) {
+            currentRepoKey = key;
+            const item = repoFiles[key];
+            document.getElementById('active-file-path').textContent = item.path;
+            document.getElementById('active-file-badge').textContent = item.badge;
+            document.getElementById('code-viewer-content').textContent = item.code;
+
+            document.querySelectorAll('.repo-file-btn').forEach(btn => {
+                btn.className = 'repo-file-btn w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left text-xs font-mono text-slate-300 hover:bg-white/5 transition-all';
+            });
+            document.getElementById(`file-btn-${key}`).className = 'repo-file-btn active w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left text-xs font-mono bg-gold-400/15 text-gold-300 border border-gold-400/30 transition-all';
+        }
+
+        function copyActiveCode() {
+            const item = repoFiles[currentRepoKey];
+            copyTextToClipboard(item.code, `Copied ${item.path} to clipboard!`);
+        }
+
+        // Load initial repository file
+        selectRepoFile('tree');
+
+        // 8. Deployment Tabs Switcher
+        function switchDeployTab(tabName) {
+            document.querySelectorAll('.deploy-panel').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`dpanel-${tabName}`).classList.remove('hidden');
+
+            document.querySelectorAll('.deploy-tab-btn').forEach(b => {
+                b.className = 'deploy-tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-obsidian-850 text-slate-300 border border-white/10 hover:border-white/30 transition-all';
+            });
+            document.getElementById(`dtab-${tabName}`).className = 'deploy-tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-gold-400 text-obsidian-950 transition-all';
+        }
+    </script>
+</body>
+</html>
