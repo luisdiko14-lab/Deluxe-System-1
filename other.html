@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SpecDeck — Phone Specs & 3D 360° Viewer</title>
+<style>
+:root{
+  --bg:#0a0b0f; --panel:#12141b; --panel2:#171a23; --line:#232733; --text:#eef0f6; --mute:#8f96a8;
+  --accent:#6ea8ff; --accent2:#a78bfa; --good:#5ee0a0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+header{position:sticky;top:0;z-index:20;background:rgba(10,11,15,.8);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:58px}
+.brand{font-weight:700;letter-spacing:.3px;display:flex;align-items:center;gap:10px}
+.brand i{width:22px;height:22px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:inline-block}
+nav a{color:var(--mute);text-decoration:none;font-size:14px;margin-left:22px}
+nav a:hover{color:var(--text)}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:22px 0 6px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--mute);padding:10px 16px;border-radius:999px;font-size:14px;cursor:pointer;transition:.2s;white-space:nowrap}
+.tab:hover{color:var(--text);border-color:#34394a}
+.tab.on{background:var(--text);color:#0a0b0f;border-color:var(--text);font-weight:600}
+.hero{display:grid;grid-template-columns:1fr 1.15fr;gap:28px;align-items:stretch;padding:18px 0 40px}
+@media(max-width:900px){.hero{grid-template-columns:1fr}}
+.info{display:flex;flex-direction:column;justify-content:center;gap:18px}
+.brandtag{color:var(--accent);font-size:13px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600}
+h1{font-size:clamp(34px,5vw,58px);line-height:1.04;letter-spacing:-1.2px}
+.tagline{color:var(--mute);font-size:17px;max-width:460px}
+.price{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.price b{font-size:34px;letter-spacing:-.5px}
+.price span{color:var(--mute);font-size:14px}
+.label{font-size:12px;color:var(--mute);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:8px}
+.swatches{display:flex;gap:12px;flex-wrap:wrap}
+.sw{width:34px;height:34px;border-radius:50%;border:2px solid transparent;cursor:pointer;position:relative;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);transition:transform .15s}
+.sw:hover{transform:scale(1.1)}
+.sw.on{border-color:var(--text);outline:2px solid var(--bg);outline-offset:-5px}
+.cname{margin-top:10px;font-size:14px}
+.cname small{color:var(--mute)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:7px 12px;font-size:13px}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:560px){.quick{grid-template-columns:repeat(2,1fr)}}
+.q{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.q small{display:block;color:var(--mute);font-size:11px;text-transform:uppercase;letter-spacing:1px}
+.q b{font-size:15px;font-weight:600}
+.stage{position:relative;border-radius:26px;border:1px solid var(--line);background:radial-gradient(120% 90% at 50% 20%,#1d2233 0%,#0d0f15 70%);min-height:560px;overflow:hidden;touch-action:none}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab}
+.stage canvas:active{cursor:grabbing}
+.hud{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px;flex-wrap:wrap;pointer-events:none}
+.hud>*{pointer-events:auto}
+.btns{display:flex;gap:6px;flex-wrap:wrap}
+.btn{border:1px solid #2c3142;background:rgba(18,20,27,.85);color:var(--text);padding:8px 13px;border-radius:10px;font-size:13px;cursor:pointer;backdrop-filter:blur(8px)}
+.btn:hover{border-color:var(--accent)}
+.btn.on{background:var(--accent);color:#07101f;border-color:var(--accent);font-weight:600}
+.badge{position:absolute;top:14px;left:14px;font-size:12px;color:var(--mute);background:rgba(18,20,27,.8);border:1px solid var(--line);padding:6px 11px;border-radius:999px}
+.badge2{position:absolute;top:14px;right:14px;font-size:12px;color:var(--good);background:rgba(18,20,27,.8);border:1px solid var(--line);padding:6px 11px;border-radius:999px}
+section{padding:44px 0;border-top:1px solid var(--line)}
+h2{font-size:30px;letter-spacing:-.6px;margin-bottom:6px}
+.sub{color:var(--mute);margin-bottom:24px}
+.groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px}
+.card h3{font-size:13px;color:var(--accent);text-transform:uppercase;letter-spacing:1.3px;margin-bottom:10px}
+.row{display:flex;justify-content:space-between;gap:18px;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.row:first-of-type{border-top:0}
+.row span{color:var(--mute);flex:0 0 36%}
+.row b{font-weight:500;text-align:right;flex:1}
+.cmp-sel{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+select{background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:15px;min-width:220px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:18px;background:var(--panel)}
+th,td{padding:12px 16px;text-align:left;border-top:1px solid var(--line);vertical-align:top}
+thead th{border-top:0;background:var(--panel2);font-weight:600;position:sticky;top:0}
+td:first-child,th:first-child{color:var(--mute);white-space:nowrap}
+td.diff{background:rgba(110,168,255,.08)}
+.grid-table td,.grid-table th{min-width:190px}
+.grid-table td:first-child,.grid-table th:first-child{min-width:140px;position:sticky;left:0;background:var(--panel2);z-index:1}
+.note{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent2);border-radius:12px;padding:14px 16px;color:var(--mute);font-size:14px;margin-top:16px}
+.note b{color:var(--text)}
+footer{padding:36px 0 60px;color:var(--mute);font-size:13px;border-top:1px solid var(--line)}
+.priceflex{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.pcard{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;cursor:pointer;transition:.2s}
+.pcard:hover{border-color:var(--accent);transform:translateY(-2px)}
+.pcard small{color:var(--mute);display:block}
+.pcard b{font-size:22px;display:block;margin-top:6px}
+.pcard em{font-style:normal;font-size:12px;color:var(--mute)}
+.bar{height:6px;border-radius:6px;background:var(--line);margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="brand"><i></i>SpecDeck</div>
+  <nav><a href="#viewer">3D viewer</a><a href="#specs">Specs</a><a href="#compare">Compare</a><a href="#prices">Prices</a><a href="#all">All phones</a></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="tabs" id="tabs" role="tablist"></div>
+
+  <div class="hero" id="viewer">
+    <div class="info">
+      <div class="brandtag" id="brand"></div>
+      <h1 id="name"></h1>
+      <p class="tagline" id="tagline"></p>
+      <div class="price"><b id="price"></b><span id="priceNote"></span></div>
+      <div>
+        <div class="label">Colours</div>
+        <div class="swatches" id="swatches"></div>
+        <div class="cname" id="cname"></div>
+      </div>
+      <div>
+        <div class="label">Storage</div>
+        <div class="chips" id="storage"></div>
+      </div>
+      <div class="quick" id="quick"></div>
+    </div>
+    <div class="stage" id="stage">
+      <canvas id="c"></canvas>
+      <div class="badge">Drag to rotate 360° · scroll to zoom</div>
+      <div class="badge2" id="angle">0°</div>
+      <div class="hud">
+        <div class="btns">
+          <button class="btn" data-snap="front">Front</button>
+          <button class="btn" data-snap="back">Back</button>
+          <button class="btn" data-snap="left">Left</button>
+          <button class="btn" data-snap="right">Right</button>
+        </div>
+        <button class="btn on" id="auto">Auto-rotate: on</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<section id="specs"><div class="wrap">
+  <h2 id="specTitle">Full specs</h2>
+  <p class="sub">Grouped specs for the phone selected above.</p>
+  <div class="groups" id="groups"></div>
+  <div class="note" id="phoneNote"></div>
+</div></section>
+
+<section id="compare"><div class="wrap">
+  <h2>Compare two phones</h2>
+  <p class="sub">Rows that differ are highlighted.</p>
+  <div class="cmp-sel"><select id="selA"></select><select id="selB"></select></div>
+  <div class="tw"><table id="cmp"></table></div>
+</div></section>
+
+<section id="prices"><div class="wrap">
+  <h2>Base prices</h2>
+  <p class="sub">Launch price of the cheapest configuration. Click a card to open the phone.</p>
+  <div class="priceflex" id="pcards"></div>
+</div></section>
+
+<section id="all"><div class="wrap">
+  <h2>All phones at a glance</h2>
+  <p class="sub">Every phone, every spec, one table.</p>
+  <div class="tw"><table class="grid-table" id="grid"></table></div>
+  <div class="note"><b>About the base iPhone 18.</b> Apple launched the iPhone 18 Pro, iPhone 18 Pro Max and iPhone Duo in September 2026, but the standard iPhone 18 is expected in spring 2027. Until then the iPhone 17 is the current base model, so it is listed here.</div>
+</div></section>
+
+<footer><div class="wrap">
+  Prices are US launch prices in USD unless stated (Xiaomi 17 Ultra: European launch price in EUR; no official US price). Specs were collected from manufacturer pages and tech press in November 2026 and can vary by region or carrier, so check the retailer before buying. The 3D models are stylised renders built in code, with colours approximating the real finishes. SpecDeck is an independent comparison page and is not affiliated with any phone maker.
+</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ---------------- DATA ---------------- */
+const PHONES = [
+{
+  id:"iphone17", brand:"Apple", name:"iPhone 17", tagline:"Apple's current standard iPhone: 120Hz ProMotion display, A19 chip and a 48MP dual camera.",
+  price:"$799", priceNum:799, priceNote:"256GB · US launch price",
+  storage:["256GB","512GB"],
+  colors:[{n:"Lavender",g:"#cdbfe0",f:"#b9a9d0"},{n:"Mist Blue",g:"#aebfd3",f:"#93a8c0"},{n:"Black",g:"#2b2d30",f:"#1b1c1e"},{n:"White",g:"#f1f1ef",f:"#d9d9d6"},{n:"Sage",g:"#b5c2a5",f:"#9eae8d"}],
+  dims:{w:71.5,h:149.6,t:8.25,r:10}, cam:"iphone17", island:"pill",
+  specs:{
+    "Display size":'6.3"', "Resolution":"2622 × 1206 (460 ppi)", "Refresh rate":"1–120 Hz ProMotion", "Peak brightness":"3,000 nits (outdoor)",
+    "Chip":"Apple A19 (3 nm)", "RAM":"8 GB", "Storage options":"256 GB / 512 GB", "OS":"iOS 26 (upgradable to iOS 27)",
+    "Rear cameras":"48 MP Fusion main + 48 MP Fusion ultra-wide", "Front camera":"18 MP Center Stage",
+    "Battery":"Up to 30 h video playback", "Charging":"USB-C fast charge · MagSafe / Qi2 up to 25 W",
+    "Dimensions":"149.6 × 71.5 × 8.25 mm", "Weight":"177 g", "Build":"Aluminium frame · Ceramic Shield 2 front · colour-infused glass back", "Water resistance":"IP68",
+    "Released":"19 Sep 2025", "Base price":"$799 (256GB) · $999 (512GB)"
+  },
+  note:"The iPhone 17 is the current base iPhone. The standard iPhone 18 has not launched yet and is expected in spring 2027."
+},
+{
+  id:"iphone18pm", brand:"Apple", name:"iPhone 18 Pro Max", tagline:"The biggest iPhone yet: 2 nm A20 Pro, variable-aperture main camera, triple 48MP system and a 2TB option.",
+  price:"$1,299", priceNum:1299, priceNote:"256GB · US launch price",
+  storage:["256GB","512GB","1TB","2TB"],
+  colors:[{n:"Black",g:"#2a2a2d",f:"#17171a"},{n:"Silver",g:"#dcdde0",f:"#c4c6cb"},{n:"Glacier",g:"#b9d3e6",f:"#9dbdd4"},{n:"Burgundy",g:"#5e1f2c",f:"#46141f"}],
+  dims:{w:78.0,h:163.4,t:8.8,r:11}, cam:"pro", island:"pill",
+  specs:{
+    "Display size":'6.9"', "Resolution":"2868 × 1320 (460 ppi)", "Refresh rate":"1–120 Hz LTPO ProMotion", "Peak brightness":"3,000 nits (outdoor)",
+    "Chip":"Apple A20 Pro (2 nm)", "RAM":"12 GB", "Storage options":"256 GB / 512 GB / 1 TB / 2 TB", "OS":"iOS 27",
+    "Rear cameras":"48 MP ×3: variable-aperture main + ultra-wide + telephoto", "Front camera":"18 MP Center Stage",
+    "Battery":"5,391 mAh · up to 45 h video playback", "Charging":"Wired PD 3.2 (50% in ~15 min) · MagSafe / Qi2 up to 25 W",
+    "Dimensions":"163.4 × 78.0 × 8.8 mm", "Weight":"249 g", "Build":"Aluminium frame · Ceramic Shield 2 front · Ceramic Shield back", "Water resistance":"IP68 (6 m, 30 min)",
+    "Released":"18 Sep 2026 (announced 9 Sep)", "Base price":"$1,299 (256GB)"
+  },
+  note:"Colours: Black, Silver, Glacier and the new Burgundy. Orange and Deep Blue from the iPhone 17 Pro line are gone."
+},
+{
+  id:"s26u", brand:"Samsung", name:"Galaxy S26 Ultra", tagline:"Samsung's flagship with a built-in S Pen, a hardware Privacy Display and 60W charging.",
+  price:"$1,299", priceNum:1299, priceNote:"12GB + 256GB · US launch price",
+  storage:["256GB","512GB","1TB"],
+  colors:[{n:"Cobalt Violet",g:"#6b5b95",f:"#54477a"},{n:"Sky Blue",g:"#8fbfe0",f:"#76a6c8"},{n:"Black",g:"#1c1c1e",f:"#101012"},{n:"White",g:"#ececec",f:"#d3d3d3"},{n:"Silver Shadow *",g:"#bfc2c7",f:"#a6a9ae"},{n:"Pink Gold *",g:"#d9b5a3",f:"#c39b88"}],
+  dims:{w:78.1,h:163.6,t:7.9,r:7}, cam:"samsung", island:"punch",
+  specs:{
+    "Display size":'6.9" Dynamic AMOLED', "Resolution":"3120 × 1440", "Refresh rate":"120 Hz", "Peak brightness":"Privacy Display built in",
+    "Chip":"Snapdragon 8 Elite Gen 5 for Galaxy", "RAM":"12 GB (16 GB on 1 TB)", "Storage options":"256 GB / 512 GB / 1 TB", "OS":"Android 16 · One UI",
+    "Rear cameras":"200 MP main + ultra-wide + two telephotos (quad)", "Front camera":"12 MP",
+    "Battery":"5,000 mAh", "Charging":"60 W wired · 25 W wireless",
+    "Dimensions":"163.6 × 78.1 × 7.9 mm", "Weight":"214 g", "Build":"Aluminium frame (returns after two titanium generations)", "Water resistance":"IP68",
+    "Released":"11 Mar 2026 (announced 25 Feb)", "Base price":"$1,299 (256GB)"
+  },
+  note:"* Silver Shadow and Pink Gold are online-exclusive colours on Samsung.com. Colour availability varies by country."
+},
+{
+  id:"pixel10pxl", brand:"Google", name:"Pixel 10 Pro XL", tagline:"Google's biggest Pixel with Tensor G5, 16GB RAM, a 100x Pro Res Zoom and seven years of updates.",
+  price:"$1,199", priceNum:1199, priceNote:"256GB · US launch price",
+  storage:["256GB","512GB","1TB"],
+  colors:[{n:"Moonstone",g:"#8a9199",f:"#6e757d"},{n:"Jade",g:"#9bb7a2",f:"#809c88"},{n:"Porcelain",g:"#e4dfd5",f:"#cdc7bb"},{n:"Obsidian",g:"#1f2124",f:"#121315"}],
+  dims:{w:76.6,h:162.8,t:8.5,r:9}, cam:"pixel", island:"punch",
+  specs:{
+    "Display size":'6.8" Super Actua LTPO OLED', "Resolution":"2992 × 1344 (486 ppi)", "Refresh rate":"1–120 Hz", "Peak brightness":"3,300 nits",
+    "Chip":"Google Tensor G5", "RAM":"16 GB", "Storage options":"256 GB / 512 GB / 1 TB", "OS":"Android 16 · 7 years of updates",
+    "Rear cameras":"50 MP main + 48 MP ultra-wide + 48 MP telephoto", "Front camera":"42 MP",
+    "Battery":"5,200 mAh", "Charging":"45 W wired · Pixelsnap (Qi2.2) up to 25 W",
+    "Dimensions":"162.8 × 76.6 × 8.5 mm", "Weight":"232 g", "Build":"Aluminium frame · Gorilla Glass Victus 2", "Water resistance":"IP68",
+    "Released":"28 Aug 2025", "Base price":"$1,199 (256GB) · $1,319 (512GB)"
+  },
+  note:"There is no 128GB version of the Pixel 10 Pro XL. Colours: Moonstone, Jade, Porcelain and Obsidian."
+},
+{
+  id:"op15", brand:"OnePlus", name:"OnePlus 15", tagline:"A flat 165Hz display, a huge battery and 120W charging at a much lower price than the other flagships.",
+  price:"$899.99", priceNum:899.99, priceNote:"12GB + 256GB · US launch price",
+  storage:["256GB","512GB"],
+  colors:[{n:"Infinite Black",g:"#17181a",f:"#0c0c0d"},{n:"Ultra Violet",g:"#7a5aa8",f:"#5f4287"},{n:"Sand Storm",g:"#cbb394",f:"#b49b7c"}],
+  dims:{w:76.7,h:161.4,t:8.1,r:9}, cam:"oneplus", island:"punch",
+  specs:{
+    "Display size":'6.78" LTPO AMOLED (flat)', "Resolution":"2772 × 1272", "Refresh rate":"1–120 Hz (up to 165 Hz in games)", "Peak brightness":"—",
+    "Chip":"Snapdragon 8 Elite Gen 5", "RAM":"12 GB / 16 GB", "Storage options":"256 GB / 512 GB", "OS":"Android 16 · OxygenOS",
+    "Rear cameras":"50 MP ×3: main + ultra-wide + 3× telephoto", "Front camera":"32 MP",
+    "Battery":"7,300 mAh", "Charging":"120 W wired · 50 W wireless",
+    "Dimensions":"161.4 × 76.7 × 8.1 mm", "Weight":"211 g", "Build":"Metal frame · glass back", "Water resistance":"IP68 / IP69",
+    "Released":"Dec 2025 (US open sale)", "Base price":"$899.99 (12+256, Infinite Black only) · $999.99 (16+512)"
+  },
+  note:"In the US the $899.99 12GB + 256GB version is only sold in Infinite Black. The $999.99 16GB + 512GB version comes in all three colours."
+},
+{
+  id:"x17u", brand:"Xiaomi", name:"Xiaomi 17 Ultra", tagline:"A Leica-tuned camera phone with a 200MP periscope zoom, 3,500-nit display and 90W charging.",
+  price:"€1,499", priceNum:null, priceNote:"16GB + 512GB · European launch price",
+  storage:["512GB","1TB"],
+  colors:[{n:"Black",g:"#1d1d1f",f:"#101011"},{n:"White",g:"#eeeeec",f:"#d6d6d3"},{n:"Starlit Green",g:"#4e6b5a",f:"#3a5446"}],
+  dims:{w:77.6,h:163,t:8.3,r:10}, cam:"xiaomi", island:"punch",
+  specs:{
+    "Display size":'6.9" LTPO AMOLED', "Resolution":"2608 × 1200 (416 ppi)", "Refresh rate":"1–120 Hz", "Peak brightness":"3,500 nits",
+    "Chip":"Snapdragon 8 Elite Gen 5 (3 nm)", "RAM":"16 GB", "Storage options":"512 GB / 1 TB", "OS":"Android 16 · HyperOS 3",
+    "Rear cameras":"50 MP main + 200 MP periscope telephoto + 50 MP ultra-wide (Leica)", "Front camera":"50 MP",
+    "Battery":"6,000 mAh (global model)", "Charging":"90 W wired · 50 W wireless",
+    "Dimensions":"~8.3 mm thick", "Weight":"~218 g (global model)", "Build":"Metal frame · glass back", "Water resistance":"—",
+    "Released":"Early 2026 (global launch)", "Base price":"€1,499 (16+512) · €1,699 (16+1TB)"
+  },
+  note:"No official US price: Xiaomi does not sell this phone through US carriers. A Leica edition with a mechanical zoom ring exists in some markets. The China version has a different battery and an extra Purple colour."
+}
+];
+
+const GROUPS = {
+  "Display":["Display size","Resolution","Refresh rate","Peak brightness"],
+  "Performance":["Chip","RAM","Storage options","OS"],
+  "Camera":["Rear cameras","Front camera"],
+  "Battery & charging":["Battery","Charging"],
+  "Body":["Dimensions","Weight","Build","Water resistance"],
+  "Release & price":["Released","Base price"]
+};
+const ALLKEYS = Object.values(GROUPS).flat();
+
+/* ---------------- STATE / UI ---------------- */
+let cur = PHONES[1];   // start with iPhone 18 Pro Max
+let colorIdx = 0;
+const $ = s => document.querySelector(s);
+
+function renderTabs(){
+  $("#tabs").innerHTML = PHONES.map(p=>`<button class="tab ${p.id===cur.id?'on':''}" data-id="${p.id}" role="tab">${p.name}</button>`).join("");
+  $("#tabs").querySelectorAll(".tab").forEach(b=>b.onclick=()=>selectPhone(b.dataset.id));
+}
+function renderInfo(){
+  $("#brand").textContent = cur.brand;
+  $("#name").textContent = cur.name;
+  $("#tagline").textContent = cur.tagline;
+  $("#price").textContent = cur.price;
+  $("#priceNote").textContent = cur.priceNote;
+  $("#storage").innerHTML = cur.storage.map(s=>`<span class="chip">${s}</span>`).join("");
+  $("#swatches").innerHTML = cur.colors.map((c,i)=>`<button class="sw ${i===colorIdx?'on':''}" data-i="${i}" title="${c.n}" aria-label="${c.n}" style="background:${c.g}"></button>`).join("");
+  $("#swatches").querySelectorAll(".sw").forEach(b=>b.onclick=()=>{colorIdx=+b.dataset.i;renderColorName();applyColor();$("#swatches").querySelectorAll(".sw").forEach((x,i)=>x.classList.toggle("on",i===colorIdx));});
+  renderColorName();
+  const s = cur.specs;
+  $("#quick").innerHTML = [["Display",s["Display size"].split(" ")[0]],["Chip",s["Chip"].replace(/\(.*\)/,"").replace(" for Galaxy","")],["RAM",s["RAM"].split(" (")[0]],["Weight",s["Weight"].split(" (")[0]]]
+    .map(([k,v])=>`<div class="q"><small>${k}</small><b>${v}</b></div>`).join("");
+}
+function renderColorName(){
+  $("#cname").innerHTML = `${cur.colors[colorIdx].n} <small>· ${cur.colors.length} colours available</small>`;
+}
+function renderSpecs(){
+  $("#specTitle").textContent = cur.name + " — full specs";
+  $("#groups").innerHTML = Object.entries(GROUPS).map(([g,keys])=>`<div class="card"><h3>${g}</h3>${keys.map(k=>`<div class="row"><span>${k}</span><b>${cur.specs[k]||"—"}</b></div>`).join("")}</div>`).join("");
+  $("#phoneNote").innerHTML = "<b>Note:</b> " + cur.note;
+}
+function renderCompare(){
+  const a = PHONES.find(p=>p.id===$("#selA").value), b = PHONES.find(p=>p.id===$("#selB").value);
+  let h = `<thead><tr><th></th><th>${a.name}</th><th>${b.name}</th></tr></thead><tbody>`;
+  h += `<tr><td>Colours</td><td>${a.colors.map(c=>c.n).join(", ")}</td><td>${b.colors.map(c=>c.n).join(", ")}</td></tr>`;
+  ALLKEYS.forEach(k=>{
+    const x=a.specs[k]||"—", y=b.specs[k]||"—", d = x!==y ? "diff":"";
+    h += `<tr><td>${k}</td><td class="${d}">${x}</td><td class="${d}">${y}</td></tr>`;
+  });
+  $("#cmp").innerHTML = h + "</tbody>";
+}
+function renderPrices(){
+  const max = 1299;
+  $("#pcards").innerHTML = PHONES.map(p=>`<div class="pcard" data-id="${p.id}"><small>${p.brand}</small><b>${p.price}</b><div>${p.name}</div><em>${p.priceNote}</em><div class="bar"><i style="width:${p.priceNum?Math.round(p.priceNum/max*100):100}%"></i></div></div>`).join("");
+  $("#pcards").querySelectorAll(".pcard").forEach(c=>c.onclick=()=>{selectPhone(c.dataset.id);document.getElementById("viewer").scrollIntoView();});
+}
+function renderGrid(){
+  let h = `<thead><tr><th></th>${PHONES.map(p=>`<th>${p.name}</th>`).join("")}</tr></thead><tbody>`;
+  h += `<tr><td>Colours</td>${PHONES.map(p=>`<td>${p.colors.map(c=>c.n).join(", ")}</td>`).join("")}</tr>`;
+  ALLKEYS.forEach(k=>{ h += `<tr><td>${k}</td>${PHONES.map(p=>`<td>${p.specs[k]||"—"}</td>`).join("")}</tr>`; });
+  $("#grid").innerHTML = h + "</tbody>";
+}
+function selectPhone(id){
+  cur = PHONES.find(p=>p.id===id); colorIdx = 0;
+  renderTabs(); renderInfo(); renderSpecs(); buildPhone();
+  const sa=$("#selA"); if(sa.value!==id){ sa.value=id; if($("#selB").value===id) $("#selB").value = PHONES.find(p=>p.id!==id).id; renderCompare(); }
+}
+
+function initSelects(){
+  const opts = PHONES.map(p=>`<option value="${p.id}">${p.name}</option>`).join("");
+  $("#selA").innerHTML = opts; $("#selB").innerHTML = opts;
+  $("#selA").value = "iphone17"; $("#selB").value = "iphone18pm";
+  $("#selA").onchange = $("#selB").onchange = renderCompare;
+}
+
+initSelects(); renderTabs(); renderInfo(); renderSpecs(); renderCompare(); renderPrices(); renderGrid();
+
+/* ---------------- 3D ---------------- */
+let buildPhone = function(){};
+if(typeof THREE==='undefined'){ document.getElementById('stage').insertAdjacentHTML('beforeend','<div style="position:absolute;inset:0;display:grid;place-items:center;color:#8f96a8;padding:30px;text-align:center">The 3D viewer could not load (three.js is fetched from a CDN, so it needs an internet connection and WebGL).</div>'); } else {
+
+const stage = $("#stage"), canvas = $("#c");
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true, preserveDrawingBuffer:false});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 2));
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+let camDist = 4.2;
+camera.position.set(0,0,camDist);
+scene.add(new THREE.HemisphereLight(0xdfe8ff, 0x20232e, 0.55));
+const key = new THREE.DirectionalLight(0xffffff, 0.8); key.position.set(3,4,5); scene.add(key);
+const rim = new THREE.DirectionalLight(0x8fb0ff, 0.8); rim.position.set(-4,1,-4); scene.add(rim);
+const fill = new THREE.DirectionalLight(0xffe6d0, 0.5); fill.position.set(-3,-2,4); scene.add(fill);
+const back = new THREE.DirectionalLight(0xffffff, 0.7); back.position.set(2,3,-5); scene.add(back);
+
+let pivot = new THREE.Group(); scene.add(pivot);
+let phoneGroup = null, frameMat, glassMat;
+let rotY = -0.5, rotX = 0.08, velY = 0, targetY = null, auto = true, dragging = false;
+const tmpColor = new THREE.Color();
+
+function rrShape(w,h,r){
+  const s = new THREE.Shape(), x=-w/2, y=-h/2;
+  s.moveTo(x+r,y); s.lineTo(x+w-r,y); s.absarc(x+w-r,y+r,r,-Math.PI/2,0,false);
+  s.lineTo(x+w,y+h-r); s.absarc(x+w-r,y+h-r,r,0,Math.PI/2,false);
+  s.lineTo(x+r,y+h); s.absarc(x+r,y+h-r,r,Math.PI/2,Math.PI,false);
+  s.lineTo(x,y+r); s.absarc(x+r,y+r,r,Math.PI,Math.PI*1.5,false);
+  return s;
+}
+function roundedSlab(w,h,t,r,bevel){
+  const d = Math.max(t-2*bevel, 0.01);
+  const g = new THREE.ExtrudeGeometry(rrShape(w-2*bevel,h-2*bevel,Math.max(r-bevel,0.5)),
+    {depth:d, bevelEnabled:true, bevelThickness:bevel, bevelSize:bevel, bevelSegments:5, curveSegments:28});
+  g.translate(0,0,-d/2);
+  return g;
+}
+function screenTexture(w,h,r,island,colorHex){
+  const S = 6, cw = Math.round(w*S), ch = Math.round(h*S);
+  const c = document.createElement("canvas"); c.width=cw; c.height=ch;
+  const x = c.getContext("2d"), rad = r*S;
+  const rr = (X,Y,W,H,R)=>{x.beginPath();x.moveTo(X+R,Y);x.arcTo(X+W,Y,X+W,Y+H,R);x.arcTo(X+W,Y+H,X,Y+H,R);x.arcTo(X,Y+H,X,Y,R);x.arcTo(X,Y,X+W,Y,R);x.closePath();};
+  rr(0,0,cw,ch,rad); x.fillStyle="#050506"; x.fill();
+  const b = 1.6*S;
+  rr(b,b,cw-2*b,ch-2*b,Math.max(rad-b,4)); x.save(); x.clip();
+  const g = x.createLinearGradient(0,0,cw,ch);
+  tmpColor.set(colorHex);
+  g.addColorStop(0,"#0b1020"); g.addColorStop(.45,"#1d2b57"); g.addColorStop(.75,"#5a3f8f"); g.addColorStop(1,"#c0577a");
+  x.fillStyle=g; x.fillRect(0,0,cw,ch);
+  const rg = x.createRadialGradient(cw*.7,ch*.25,10,cw*.7,ch*.25,cw*.9);
+  rg.addColorStop(0,"rgba(120,190,255,.55)"); rg.addColorStop(1,"rgba(120,190,255,0)");
+  x.fillStyle=rg; x.fillRect(0,0,cw,ch);
+  x.fillStyle="rgba(255,255,255,.92)"; x.textAlign="center";
+  x.font = `300 ${cw*.2}px -apple-system, Helvetica, Arial, sans-serif`;
+  x.fillText("9:41", cw/2, ch*.27);
+  x.font = `500 ${cw*.05}px -apple-system, Helvetica, Arial, sans-serif`;
+  x.fillStyle="rgba(255,255,255,.75)"; x.fillText("Monday, 16 November", cw/2, ch*.315);
+  x.restore();
+  x.fillStyle="#000";
+  if(island==="pill"){ rr(cw/2-cw*.14, ch*.02, cw*.28, ch*.018*1.4+8, 40); x.fill(); }
+  else { x.beginPath(); x.arc(cw/2, ch*.026, cw*.022, 0, Math.PI*2); x.fill(); }
+  const tex = new THREE.CanvasTexture(c); tex.anisotropy = 8;
+  return tex;
+}
+function lens(group, bx, by, r, zBack, h){
+  const x = bx; // world +x is the viewer's left when looking at the back
+  const ringM = new THREE.MeshStandardMaterial({color:0x9aa0aa, metalness:.9, roughness:.25});
+  const glassM = new THREE.MeshPhysicalMaterial({color:0x07080d, metalness:.2, roughness:.08, clearcoat:1, clearcoatRoughness:.05});
+  const ring = new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,48), ringM);
+  ring.rotation.x = Math.PI/2; ring.position.set(x,by,zBack - h/2);
+  const gl = new THREE.Mesh(new THREE.CylinderGeometry(r*.78,r*.78,h+.3,48), glassM);
+  gl.rotation.x = Math.PI/2; gl.position.set(x,by,zBack - h/2 - .15);
+  const core = new THREE.Mesh(new THREE.CylinderGeometry(r*.34,r*.34,h+.5,32), new THREE.MeshStandardMaterial({color:0x1a2340, metalness:.6, roughness:.15, emissive:0x0a1230}));
+  core.rotation.x = Math.PI/2; core.position.set(x,by,zBack - h/2 - .25);
+  group.add(ring,gl,core);
+}
+function dot(group,bx,by,r,zBack,color){
+  const m = new THREE.Mesh(new THREE.CylinderGeometry(r,r,.4,24), new THREE.MeshStandardMaterial({color,roughness:.4,metalness:.2}));
+  m.rotation.x=Math.PI/2; m.position.set(bx,by,zBack-.2); group.add(m);
+}
+function slabAt(group, bx, by, w, h, r, zBack, depth, mat){
+  const g = roundedSlab(w,h,depth,Math.min(r,w/2-.1,h/2-.1),Math.min(.5,depth/3));
+  const m = new THREE.Mesh(g, mat); m.position.set(bx,by,zBack - depth/2); group.add(m); return m;
+}
+function buildCamera(group, d, kind){
+  const {w,h,t} = d, hw=w/2, hh=h/2, zB = -t/2 - .01;
+  const darkM = new THREE.MeshPhysicalMaterial({color:0x14161b, roughness:.3, metalness:.4, clearcoat:.6});
+  const bumpGlass = glassMatRef;  // same colour as back, so it follows swatch changes
+  if(kind==="iphone17"){
+    const px=hw-17, py=hh-24;
+    slabAt(group,px,py,28,44,9,zB,1.3,bumpGlass);
+    lens(group,px,py+10,7.4,zB-1.3,1.6); lens(group,px,py-10,7.4,zB-1.3,1.6);
+    dot(group,px-9.5,py+17,1.7,zB-1.3,0xf3e9c5);
+  } else if(kind==="pro"){
+    const py=hh-22;
+    slabAt(group,0,py,w-.6,36,6,zB,1.5,bumpGlass);
+    const ax=hw-20;
+    lens(group,ax,py+8.5,7.6,zB-1.5,1.7); lens(group,ax,py-8.5,7.6,zB-1.5,1.7); lens(group,ax-16.5,py,7.6,zB-1.5,1.7);
+    dot(group,-hw+22,py+8,2.2,zB-1.5,0xf3e9c5); dot(group,-hw+22,py-8,2.2,zB-1.5,0x222);
+  } else if(kind==="samsung"){
+    const ax=hw-14.5;
+    [hh-17,hh-36.5,hh-56].forEach(y=>lens(group,ax,y,7,zB,1.4));
+    lens(group,ax-16,hh-17,4.6,zB,1.1); dot(group,ax-16,hh-30,1.6,zB,0xf3e9c5);
+  } else if(kind==="pixel"){
+    const py=hh-43;
+    slabAt(group,0,py,w+.2,19,3,zB,1.6,darkM);
+    lens(group,0,py,6.6,zB-1.6,1.4); lens(group,-13.5,py,5.2,zB-1.6,1.2); lens(group,13.5,py,5.2,zB-1.6,1.2);
+    dot(group,-(hw-18),py+4,1.4,zB-1.6,0xf3e9c5);
+  } else if(kind==="oneplus"){
+    const px=hw-27, py=hh-27;
+    slabAt(group,px,py,44,44,13,zB,1.6,darkM);
+    lens(group,px-8.5,py+8.5,7.6,zB-1.6,1.4); lens(group,px-8.5,py-8.5,7.6,zB-1.6,1.4); lens(group,px+9,py,7.6,zB-1.6,1.4);
+    dot(group,px+14,py+16,1.6,zB-1.6,0xf3e9c5);
+  } else if(kind==="xiaomi"){
+    const px=hw-33, py=hh-34;
+    const disc = new THREE.Mesh(new THREE.CylinderGeometry(27,27,2,64), darkM);
+    disc.rotation.x=Math.PI/2; disc.position.set(px,py,zB-1); group.add(disc);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(26,0.8,12,64), new THREE.MeshStandardMaterial({color:0x8d939c,metalness:.9,roughness:.3}));
+    ring.position.set(px,py,zB-2); group.add(ring);
+    lens(group,px-10,py+10,8.2,zB-2,1.5); lens(group,px+10,py+10,8.2,zB-2,1.5);
+    lens(group,px-10,py-10,8.2,zB-2,1.5); lens(group,px+10,py-10,10,zB-2,1.8);
+  }
+}
+let glassMatRef;
+buildPhone = function(){
+  if(phoneGroup){ pivot.remove(phoneGroup); phoneGroup.traverse(o=>{ if(o.geometry) o.geometry.dispose(); }); }
+  phoneGroup = new THREE.Group();
+  const d = cur.dims, c = cur.colors[colorIdx];
+  frameMat = new THREE.MeshStandardMaterial({color:c.f, metalness:.75, roughness:.32});
+  glassMat = new THREE.MeshPhysicalMaterial({color:c.g, metalness:.1, roughness:.35, clearcoat:.8, clearcoatRoughness:.25});
+  glassMatRef = glassMat;
+  const body = new THREE.Mesh(roundedSlab(d.w,d.h,d.t,d.r,1.3), frameMat); phoneGroup.add(body);
+  // back glass plate
+  const backPlate = new THREE.Mesh(new THREE.ShapeGeometry(rrShape(d.w-1.2,d.h-1.2,d.r-.8),28), glassMat);
+  backPlate.material.side = THREE.DoubleSide; backPlate.rotation.y = Math.PI; backPlate.position.z = -d.t/2 - .01; phoneGroup.add(backPlate);
+  // front screen
+  const sw = d.w-1.6, sh = d.h-1.6, sr = d.r-.8;
+  const scr = new THREE.Mesh(new THREE.PlaneGeometry(sw,sh), new THREE.MeshBasicMaterial({map:screenTexture(sw,sh,sr,cur.island,c.g), transparent:true, alphaTest:.5, toneMapped:false}));
+  scr.position.z = d.t/2 + .02; phoneGroup.add(scr);
+  const glassOver = new THREE.Mesh(new THREE.PlaneGeometry(sw,sh), new THREE.MeshPhysicalMaterial({color:0xffffff, transparent:true, opacity:.06, roughness:.05, clearcoat:1}));
+  glassOver.position.z = d.t/2 + .04; phoneGroup.add(glassOver);
+  // buttons
+  const bm = frameMat;
+  const btn = (y,hh,side)=>{ const m = new THREE.Mesh(new THREE.BoxGeometry(.9,hh,2.2), bm); m.position.set(side*(d.w/2+.15), y, 0); phoneGroup.add(m); };
+  btn(d.h*.22,d.h*.1,1); btn(d.h*.33,6,-1); btn(d.h*.2,10,-1); btn(d.h*.07,10,-1);
+  buildCamera(phoneGroup, d, cur.cam);
+  phoneGroup.scale.setScalar(1.95 / 163.6); // same scale for every phone, so relative sizes are true
+  pivot.add(phoneGroup);
+  applyColor();
+}
+function applyColor(){
+  if(!frameMat) return;
+  const c = cur.colors[colorIdx];
+  frameMat.color.set(c.f); glassMat.color.set(c.g);
+}
+function fit(){
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w,h,false);
+  camera.aspect = w/h;
+  camDist = w/h < .8 ? 5.6 : 4.6;
+  camera.position.z = camDist;
+  camera.updateProjectionMatrix();
+}
+new ResizeObserver(fit).observe(stage);
+
+/* interaction */
+let lastX=0,lastY=0, pinch=0;
+const ptrs = new Map();
+canvas.addEventListener("pointerdown",e=>{ canvas.setPointerCapture(e.pointerId); ptrs.set(e.pointerId,e); dragging=true; targetY=null; lastX=e.clientX; lastY=e.clientY; velY=0; if(ptrs.size===2){const [a,b]=[...ptrs.values()];pinch=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);} });
+canvas.addEventListener("pointermove",e=>{
+  if(!ptrs.has(e.pointerId)) return; ptrs.set(e.pointerId,e);
+  if(ptrs.size===2){ const [a,b]=[...ptrs.values()]; const dd=Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY); camDist = Math.min(8,Math.max(2.4,camDist-(dd-pinch)*.01)); pinch=dd; return; }
+  const dx=e.clientX-lastX, dy=e.clientY-lastY; lastX=e.clientX; lastY=e.clientY;
+  rotY += dx*.011; velY = dx*.011; rotX = Math.max(-1.1,Math.min(1.1,rotX+dy*.008));
+});
+const up = e=>{ ptrs.delete(e.pointerId); if(!ptrs.size) dragging=false; };
+canvas.addEventListener("pointerup",up); canvas.addEventListener("pointercancel",up);
+canvas.addEventListener("wheel",e=>{ e.preventDefault(); camDist = Math.min(8,Math.max(2.4,camDist+e.deltaY*.003)); },{passive:false});
+document.querySelectorAll("[data-snap]").forEach(b=>b.onclick=()=>{
+  const m = {front:0,right:-Math.PI/2,back:Math.PI,left:Math.PI/2}[b.dataset.snap];
+  // go the shortest way to the nearest equivalent angle
+  const two = Math.PI*2; let t = m + Math.round((rotY-m)/two)*two;
+  targetY = t; rotX = 0; velY = 0;
+});
+$("#auto").onclick = ()=>{ auto=!auto; $("#auto").classList.toggle("on",auto); $("#auto").textContent="Auto-rotate: "+(auto?"on":"off"); };
+
+function tick(){
+  requestAnimationFrame(tick);
+  if(targetY!==null && !dragging){ rotY += (targetY-rotY)*.12; if(Math.abs(targetY-rotY)<.002){ rotY=targetY; targetY=null; } }
+  else if(!dragging){
+    if(Math.abs(velY)>.0005){ rotY += velY; velY*=.94; }
+    else if(auto) rotY += .006;
+  }
+  if(!dragging && targetY===null && Math.abs(rotX)>.0005 && !auto) rotX += (0.08-rotX)*.02;
+  pivot.rotation.y = rotY; pivot.rotation.x = rotX;
+  pivot.position.y = Math.sin(performance.now()/1400)*.03;
+  camera.position.z += (camDist-camera.position.z)*.12;
+  const deg = ((Math.round(rotY*180/Math.PI)%360)+360)%360;
+  $("#angle").textContent = deg+"°";
+  renderer.render(scene,camera);
+}
+
+
+fit(); buildPhone(); tick();
+}
+</script>
+</body>
+</html>
