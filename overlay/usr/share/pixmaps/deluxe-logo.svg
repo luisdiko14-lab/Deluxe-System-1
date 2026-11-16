@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1a2a63"/><stop offset="0.55" stop-color="#0e1738"/><stop offset="1" stop-color="#070c20"/>
+    </linearGradient>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe9a3"/><stop offset="0.5" stop-color="#f5c542"/><stop offset="1" stop-color="#c8921a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.3" cy="0.2" r="0.9">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.16"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="256" height="256" rx="58" fill="url(#bg)"/>
+  <rect width="256" height="256" rx="58" fill="url(#glow)"/>
+  <rect x="5" y="5" width="246" height="246" rx="53" fill="none" stroke="url(#g)" stroke-opacity="0.45" stroke-width="2.5"/>
+  <!-- D -->
+  <path fill="url(#g)" fill-rule="evenodd"
+        d="M40 62 H92 C128 62 150 88 150 128 C150 168 128 194 92 194 H40 Z
+           M68 88 V168 H90 C110 168 122 154 122 128 C122 102 110 88 90 88 Z"/>
+  <!-- 1 -->
+  <path fill="url(#g)" d="M166 86 L190 62 H212 V194 H184 V98 L166 108 Z"/>
+</svg>

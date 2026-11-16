@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
+<wallpapers>
+  <wallpaper deleted="false">
+    <name>Aurora</name>
+    <filename>/usr/share/backgrounds/deluxe/aurora-light.png</filename>
+    <filename-dark>/usr/share/backgrounds/deluxe/aurora-dark.png</filename-dark>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#0e1738</pcolor>
+    <scolor>#0e1738</scolor>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>Golden Dunes</name>
+    <filename>/usr/share/backgrounds/deluxe/dunes-light.png</filename>
+    <filename-dark>/usr/share/backgrounds/deluxe/dunes-dark.png</filename-dark>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#0e1738</pcolor>
+    <scolor>#0e1738</scolor>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>Horizon Grid</name>
+    <filename>/usr/share/backgrounds/deluxe/horizon-light.png</filename>
+    <filename-dark>/usr/share/backgrounds/deluxe/horizon-dark.png</filename-dark>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#0e1738</pcolor>
+    <scolor>#0e1738</scolor>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>Orbits</name>
+    <filename>/usr/share/backgrounds/deluxe/orbits-light.png</filename>
+    <filename-dark>/usr/share/backgrounds/deluxe/orbits-dark.png</filename-dark>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#0e1738</pcolor>
+    <scolor>#0e1738</scolor>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>Facets</name>
+    <filename>/usr/share/backgrounds/deluxe/facets-light.png</filename>
+    <filename-dark>/usr/share/backgrounds/deluxe/facets-dark.png</filename-dark>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#0e1738</pcolor>
+    <scolor>#0e1738</scolor>
+  </wallpaper>
+</wallpapers>

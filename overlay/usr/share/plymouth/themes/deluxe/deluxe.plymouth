@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Deluxe System 1
+Description=Gold D1 logo on a navy gradient with a progress bar
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/deluxe
+ScriptFile=/usr/share/plymouth/themes/deluxe/deluxe.script

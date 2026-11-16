@@ -1,0 +1,10 @@
+#!/bin/sh
+# Adds the Flathub remote the first time the machine is online (covers builds made without network
+# access to Flathub). Removes itself from the "to do" list by creating a marker file.
+[ "$2" = "up" ] || [ "$2" = "connectivity-change" ] || exit 0
+[ -f /var/lib/deluxe/flathub-done ] && exit 0
+command -v flatpak >/dev/null 2>&1 || exit 0
+if flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo; then
+  mkdir -p /var/lib/deluxe && touch /var/lib/deluxe/flathub-done
+fi
+exit 0

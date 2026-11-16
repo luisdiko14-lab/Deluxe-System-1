@@ -1,0 +1,40 @@
+# Calamares branding for Deluxe System 1 — installed to /usr/share/calamares/branding/deluxe/
+---
+componentName: deluxe
+
+welcomeStyleCalamares: true
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 900px,580px
+windowPlacement: center
+
+strings:
+  productName:         "Deluxe System 1"
+  shortProductName:    "Deluxe"
+  version:             "1.0"
+  shortVersion:        "1.0"
+  versionedName:       "Deluxe System 1 1.0 (Aurora)"
+  shortVersionedName:  "Deluxe 1.0"
+  bootloaderEntryName: "Deluxe System 1"
+  productUrl:          "https://example.org/deluxe-system-1"
+  supportUrl:          "https://example.org/deluxe-system-1/support"
+  knownIssuesUrl:      "https://example.org/deluxe-system-1/issues"
+  releaseNotesUrl:     "https://example.org/deluxe-system-1/release-notes"
+  donateUrl:           "https://example.org/deluxe-system-1/donate"
+
+images:
+  productLogo:    "logo.png"
+  productIcon:    "icon.png"
+  productWelcome: "welcome.png"
+
+# Dark navy sidebar with gold selection
+style:
+  SidebarBackground:        "#0e1738"
+  SidebarText:              "#cdd6ff"
+  SidebarTextCurrent:       "#0e1738"
+  SidebarBackgroundCurrent: "#f5c542"
+
+slideshow: "show.qml"
+slideshowAPI: 2
+
+stylesheet: "stylesheet.qss"

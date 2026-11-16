@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.deluxe.system" path="/org/deluxe/system/">
+    <key name="theme-mode" type="s">
+      <choices>
+        <choice value="auto"/>
+        <choice value="light"/>
+        <choice value="dark"/>
+      </choices>
+      <default>'auto'</default>
+      <summary>Light/dark theme mode</summary>
+      <description>auto switches between light (daytime) and dark (night) using the times below; light and dark pin the theme.</description>
+    </key>
+    <key name="auto-dark-start" type="s">
+      <default>'19:00'</default>
+      <summary>Time dark mode starts in auto mode (HH:MM)</summary>
+    </key>
+    <key name="auto-light-start" type="s">
+      <default>'07:00'</default>
+      <summary>Time light mode starts in auto mode (HH:MM)</summary>
+    </key>
+    <key name="welcome-shown" type="b">
+      <default>false</default>
+      <summary>The Welcome app has been shown once</summary>
+    </key>
+  </schema>
+</schemalist>

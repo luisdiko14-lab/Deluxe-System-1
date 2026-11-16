@@ -1,0 +1,6 @@
+[Unit]
+Description=Apply the Deluxe light/dark theme
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/deluxe-theme --apply

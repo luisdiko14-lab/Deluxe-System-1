@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=X-GNOME-Metatheme
+Name=Deluxe-dark
+Comment=Deluxe System 1 dark theme (gold on navy accents, rounded corners)
+
+[X-GNOME-Metatheme]
+GtkTheme=Deluxe-dark
+IconTheme=Papirus-Dark
+CursorTheme=Adwaita

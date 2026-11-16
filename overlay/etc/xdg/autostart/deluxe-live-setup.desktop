@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Deluxe live session setup
+Exec=/usr/local/lib/deluxe/live-session-setup.sh
+NoDisplay=true
+X-GNOME-Autostart-Delay=3
+OnlyShowIn=GNOME;

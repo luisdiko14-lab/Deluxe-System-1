@@ -1,0 +1,18 @@
+# Purged after installation: bloat, telemetry, snap integration, unused games/apps.
+snapd
+gnome-software-plugin-snap
+ubuntu-report
+apport
+apport-symptoms
+whoopsie
+popularity-contest
+ubuntu-advantage-tools
+ubuntu-pro-client
+totem
+totem-plugins
+gnome-mahjongg
+gnome-mines
+gnome-sudoku
+aisleriot
+gnome-games
+cups-browsed

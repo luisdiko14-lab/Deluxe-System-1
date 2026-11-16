@@ -1,0 +1,11 @@
+// Automatic updates: security fixes only. Origins are spelled out literally on purpose:
+// the usual ${distro_id}/${distro_codename} macros come from /etc/lsb-release, which on
+// Deluxe System 1 says "Deluxe"/"aurora", so they would never match Ubuntu's archive.
+Unattended-Upgrade::Allowed-Origins {
+    "Ubuntu:noble-security";
+    "UbuntuESMApps:noble-apps-security";
+    "UbuntuESM:noble-infra-security";
+};
+Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+Unattended-Upgrade::Remove-Unused-Dependencies "true";
+Unattended-Upgrade::Automatic-Reboot "false";

@@ -1,0 +1,22 @@
+/* Calamares stylesheet — dark navy surfaces, gold accents */
+QWidget { font-family: "Inter", sans-serif; font-size: 13px; color: #e6ebff; }
+#mainApp, QWidget#mainApp { background-color: #121a3a; }
+QPushButton {
+  background-color: #1c2a63; color: #e6ebff; border: 1px solid #2c3d85;
+  border-radius: 8px; padding: 7px 18px;
+}
+QPushButton:hover { background-color: #26377a; }
+QPushButton:default, QPushButton:focus { border-color: #f5c542; }
+QPushButton:disabled { color: #6c7aae; background-color: #151f4a; }
+QLineEdit, QComboBox, QSpinBox, QListView, QTreeView, QTableView, QTextBrowser {
+  background-color: #0e1530; border: 1px solid #2c3d85; border-radius: 8px; padding: 4px 6px;
+  selection-background-color: #f5c542; selection-color: #0e1738;
+}
+QLineEdit:focus { border-color: #f5c542; }
+QCheckBox::indicator:checked, QRadioButton::indicator:checked { background-color: #f5c542; border: 1px solid #c8921a; }
+QProgressBar { background-color: #0e1530; border: none; border-radius: 6px; text-align: center; }
+QProgressBar::chunk { background-color: #f5c542; border-radius: 6px; }
+QHeaderView::section { background-color: #1c2a63; border: none; padding: 4px; }
+QScrollBar:vertical { background: #0e1530; width: 10px; }
+QScrollBar::handle:vertical { background: #2c3d85; border-radius: 5px; }
+QToolTip { background-color: #0e1738; color: #f5c542; border: 1px solid #f5c542; }

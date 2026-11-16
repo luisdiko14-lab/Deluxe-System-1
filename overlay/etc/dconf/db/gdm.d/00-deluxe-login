@@ -1,0 +1,16 @@
+# Login screen branding for Deluxe System 1
+[org/gnome/login-screen]
+logo='/usr/share/pixmaps/deluxe-logo.svg'
+banner-message-enable=true
+banner-message-text='Deluxe System 1 · Aurora'
+disable-user-list=false
+
+[org/gnome/desktop/interface]
+color-scheme='prefer-dark'
+font-name='Inter 11'
+icon-theme='Papirus-Dark'
+enable-animations=true
+
+[org/gnome/settings-daemon/plugins/power]
+sleep-inactive-ac-type='nothing'
+sleep-inactive-battery-type='nothing'

@@ -1,0 +1,25 @@
+/* Deluxe-dark — GTK3. Builds on Adwaita-dark and adds the Deluxe palette + rounded shapes. */
+@import url("resource:///org/gtk/libgtk/theme/Adwaita/gtk-contained-dark.css");
+
+@define-color deluxe_gold #f5c542;
+@define-color deluxe_navy #0e1738;
+@define-color theme_bg_color #121a3a;
+@define-color theme_base_color #0e1530;
+@define-color theme_selected_bg_color #f5c542;
+@define-color theme_selected_fg_color #0e1738;
+@define-color accent_bg_color #f5c542;
+@define-color accent_color #f5c542;
+
+window, window.background { background-color: #121a3a; border-radius: 12px; }
+selection, *:selected { background-color: @deluxe_gold; color: @deluxe_navy; }
+headerbar, .titlebar { border-radius: 12px 12px 0 0; background-image: linear-gradient(#1a2552, #141c42); }
+button { border-radius: 8px; transition: all 160ms ease-out; }
+button.suggested-action { background-image: none; background-color: @deluxe_gold; color: @deluxe_navy; }
+button.suggested-action:hover { background-color: shade(@deluxe_gold, 1.1); }
+entry, spinbutton, combobox button { border-radius: 8px; }
+entry:focus { border-color: @deluxe_gold; box-shadow: 0 0 0 2px alpha(@deluxe_gold, 0.35); }
+switch { border-radius: 14px; }
+switch:checked { background-color: @deluxe_gold; color: @deluxe_navy; }
+popover, menu { border-radius: 12px; }
+scale highlight, progressbar progress { background-color: @deluxe_gold; border-radius: 6px; }
+notebook > header > tabs > tab { border-radius: 8px 8px 0 0; }

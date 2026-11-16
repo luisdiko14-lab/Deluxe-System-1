@@ -1,0 +1,14 @@
+PRETTY_NAME="Deluxe System 1 1.0 (Aurora)"
+NAME="Deluxe System 1"
+VERSION_ID="1.0"
+VERSION="1.0 (Aurora)"
+VERSION_CODENAME=aurora
+ID=deluxe
+ID_LIKE="ubuntu debian"
+HOME_URL="https://example.org/deluxe-system-1"
+SUPPORT_URL="https://example.org/deluxe-system-1/support"
+BUG_REPORT_URL="https://example.org/deluxe-system-1/issues"
+PRIVACY_POLICY_URL="https://example.org/deluxe-system-1/privacy"
+LOGO=deluxe-logo
+# Base-system codename: tools such as Docker's and PPA scripts read UBUNTU_CODENAME to find the right repository.
+UBUNTU_CODENAME=noble

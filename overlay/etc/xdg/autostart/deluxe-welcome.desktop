@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Welcome to Deluxe System 1
+Exec=/usr/local/lib/deluxe/welcome-autostart.sh
+NoDisplay=true
+OnlyShowIn=GNOME;

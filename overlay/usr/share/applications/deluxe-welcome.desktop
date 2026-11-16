@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Welcome to Deluxe System 1
+GenericName=Welcome
+Comment=Pick a theme, install extra apps and check for updates
+Exec=/usr/local/bin/deluxe-welcome
+Icon=deluxe-welcome
+Terminal=false
+Categories=GNOME;GTK;Settings;System;
+Keywords=welcome;theme;apps;update;deluxe;
+StartupNotify=true

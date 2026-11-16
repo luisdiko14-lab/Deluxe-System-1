@@ -1,0 +1,166 @@
+# Packages installed into Deluxe System 1 (Ubuntu 24.04 "noble"; main/universe/multiverse).
+# One package per line. "#" starts a comment. Installed WITHOUT Recommends (keeps the ISO small),
+# so anything a feature really needs is listed explicitly.
+#
+# Inkscape and OBS Studio are NOT here on purpose: they are offered as Flatpaks (from Flathub)
+# in the Welcome app, which keeps the ISO under 4.7 GB. To bake them in, add `inkscape` and
+# `obs-studio` below and expect roughly +450 MB.
+
+## --- boot, installer, hardware ---------------------------------------------------------
+casper
+initramfs-tools
+grub-pc
+grub-pc-bin
+grub-efi-amd64-bin
+grub-efi-amd64-signed
+grub-common
+grub2-common
+grub-gfxpayload-lists
+shim-signed
+mtools
+dosfstools
+os-prober
+efibootmgr
+laptop-detect
+intel-microcode
+amd64-microcode
+linux-firmware
+wireless-regdb
+ubuntu-drivers-common
+fwupd
+calamares
+rsync
+squashfs-tools
+parted
+cryptsetup
+cryptsetup-initramfs
+x11-xserver-utils
+sudo
+polkitd
+pkexec
+
+## --- networking / Wi-Fi / Bluetooth ----------------------------------------------------
+network-manager
+wpasupplicant
+iw
+rfkill
+bluez
+openssh-client
+ca-certificates
+curl
+wget
+
+## --- GNOME desktop -----------------------------------------------------------------------
+gnome-core
+gnome-tweaks
+gnome-shell-extension-ubuntu-dock
+gnome-shell-extension-appindicator
+gnome-shell-extension-desktop-icons-ng
+gnome-shell-extensions
+gnome-software
+gnome-software-plugin-flatpak
+gnome-keyring
+libpam-gnome-keyring
+xdg-user-dirs
+xdg-user-dirs-gtk
+xdg-desktop-portal-gtk
+xwayland
+xserver-xorg-core
+xserver-xorg-input-libinput
+mesa-vulkan-drivers
+libgl1-mesa-dri
+libglx-mesa0
+mesa-va-drivers
+mesa-vdpau-drivers
+power-profiles-daemon
+upower
+geoclue-2.0
+gvfs-backends
+ntfs-3g
+exfatprogs
+btrfs-progs
+xfsprogs
+udisks2
+ibus
+cups
+cups-pk-helper
+system-config-printer-common
+pipewire-audio
+libspa-0.2-bluetooth
+alsa-utils
+dconf-cli
+python3-gi
+gir1.2-gtk-4.0
+gir1.2-adw-1
+gnome-terminal
+plymouth
+plymouth-label
+
+## --- look and feel --------------------------------------------------------------------
+papirus-icon-theme
+fonts-inter
+fonts-jetbrains-mono
+fonts-noto-core
+fonts-noto-color-emoji
+fonts-liberation
+fonts-crosextra-carlito
+fonts-crosextra-caladea
+fonts-dejavu-core
+
+## --- applications --------------------------------------------------------------------
+firefox                    # real .deb from Mozilla's APT repo (Ubuntu's is a snap stub)
+libreoffice-writer
+libreoffice-calc
+libreoffice-impress
+libreoffice-draw
+libreoffice-gtk3
+libreoffice-style-colibre
+hunspell-en-us
+vlc
+gimp
+codium                     # VSCodium (MIT-licensed build of VS Code) from the VSCodium APT repo
+git
+python3
+python3-pip
+python3-venv
+nodejs
+npm
+build-essential
+docker.io
+docker-compose-v2
+
+## --- utilities -----------------------------------------------------------------------
+timeshift
+gparted
+bleachbit
+gufw
+flatpak
+htop
+nano
+zip
+unzip
+p7zip-full
+bash-completion
+lsb-release
+
+## --- codecs (free + patent-encumbered formats that Ubuntu ships in multiverse) -----------
+gstreamer1.0-plugins-good
+gstreamer1.0-plugins-bad
+gstreamer1.0-plugins-ugly
+gstreamer1.0-libav
+gstreamer1.0-vaapi
+libavcodec-extra
+
+## --- performance & security ----------------------------------------------------------
+systemd-zram-generator
+preload
+ufw
+apparmor
+apparmor-utils
+unattended-upgrades
+
+## --- language ------------------------------------------------------------------------
+language-pack-en
+language-pack-gnome-en
+locales
+tzdata

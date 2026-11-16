@@ -1,0 +1,36 @@
+/* Deluxe System 1 — GNOME Shell theme overrides.
+   hooks/30-desktop.sh extracts the stock shell theme from gnome-shell-theme.gresource into this
+   directory and appends this file to gnome-shell.css. A user-theme must replace the whole stylesheet,
+   which is why we build on the stock one instead of shipping a from-scratch CSS. */
+
+/* Palette: navy surfaces, gold accent */
+.popup-menu-content, .candidate-popup-content, .modal-dialog, .notification-banner,
+.message-list-clear-button, #calendarArea {
+  border-radius: 18px;
+}
+.popup-menu-item { border-radius: 10px; }
+.button { border-radius: 10px; }
+.panel-button { border-radius: 14px; transition-duration: 160ms; }
+#panel .panel-button:focus, #panel .panel-button:active, #panel .panel-button:checked,
+.popup-menu-item:active, .popup-menu-item:focus {
+  background-color: rgba(245, 197, 66, 0.22);
+}
+.toggle-switch:checked, .quick-toggle:checked, .quick-slider .slider { color: #0e1738; }
+.quick-toggle:checked { background-color: #f5c542; color: #0e1738; }
+.slider { -barlevel-active-background-color: #f5c542; -slider-handle-border-color: #f5c542; }
+StEntry:focus { border-color: #f5c542; }
+.app-folder-dialog, .overview-tile, .app-well-app .overview-icon { border-radius: 16px; }
+.workspace-thumbnail { border-radius: 12px; }
+
+/* Bottom dock (the Dash-to-Dock fork shipped as gnome-shell-extension-ubuntu-dock) */
+#dashtodockContainer #dash .dash-background,
+#dashtodockContainer.bottom #dash .dash-background {
+  border-radius: 22px;
+  background-color: rgba(14, 23, 56, 0.72);
+  border: 1px solid rgba(245, 197, 66, 0.28);
+}
+#dashtodockContainer .dash-item-container .app-well-app:hover .overview-icon {
+  background-color: rgba(245, 197, 66, 0.20);
+  border-radius: 14px;
+}
+#dashtodockContainer .app-well-app-running-dot { background-color: #f5c542; }

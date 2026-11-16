@@ -1,0 +1,77 @@
+# Deluxe System 1 GRUB theme (used by the live ISO menu and the installed system)
+title-text: ""
+desktop-image: "background.png"
+desktop-color: "#0e1738"
+terminal-font: "Unifont Regular 16"
+terminal-left: "0"
+terminal-top: "0"
+terminal-width: "100%"
+terminal-height: "100%"
+terminal-border: "0"
+
++ image {
+  file = "logo.png"
+  left = 50%-64
+  top = 7%
+  width = 128
+  height = 128
+}
+
++ label {
+  text = "Deluxe System 1 · Aurora"
+  left = 0
+  top = 7% + 140
+  width = 100%
+  align = "center"
+  color = "#f5c542"
+  font = "DejaVu Sans Bold 22"
+}
+
++ boot_menu {
+  left = 50%-300
+  top = 34%
+  width = 600
+  height = 40%
+  item_font = "DejaVu Sans Regular 16"
+  item_color = "#cdd6ff"
+  selected_item_font = "DejaVu Sans Bold 16"
+  selected_item_color = "#0e1738"
+  icon_width = 0
+  icon_height = 0
+  item_height = 38
+  item_padding = 10
+  item_spacing = 6
+  selected_item_pixmap_style = "select_*.png"
+}
+
++ progress_bar {
+  id = "__timeout__"
+  left = 50%-300
+  top = 80%
+  width = 600
+  height = 6
+  show_text = false
+  bar_style = "progress_bar_*.png"
+  highlight_style = "progress_highlight_*.png"
+}
+
++ label {
+  id = "__timeout__"
+  text = "Booting in %d seconds"
+  left = 0
+  top = 80% + 20
+  width = 100%
+  align = "center"
+  color = "#8d9bd0"
+  font = "DejaVu Sans Regular 13"
+}
+
++ label {
+  text = "↑ ↓ select   Enter boot   E edit   C command line"
+  left = 0
+  top = 94%
+  width = 100%
+  align = "center"
+  color = "#6c7aae"
+  font = "DejaVu Sans Regular 12"
+}

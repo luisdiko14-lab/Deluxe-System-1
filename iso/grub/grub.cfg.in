@@ -1,0 +1,40 @@
+# Deluxe System 1 live-ISO boot menu (BIOS and UEFI). @NAME@ etc. are filled in by build.sh.
+search --no-floppy --file --set=root /.disk/info
+set default=0
+set timeout=8
+set timeout_style=menu
+
+if loadfont /boot/grub/unicode.pf2 ; then
+  set gfxmode=auto
+  insmod all_video
+  insmod gfxterm
+  insmod png
+  terminal_output gfxterm
+  set theme=/boot/grub/theme/theme.txt
+fi
+
+menuentry "Try or Install @NAME@" {
+    set gfxpayload=keep
+    linux   /casper/vmlinuz boot=casper quiet splash ---
+    initrd  /casper/initrd
+}
+menuentry "@NAME@ (safe graphics)" {
+    set gfxpayload=keep
+    linux   /casper/vmlinuz boot=casper nomodeset quiet splash ---
+    initrd  /casper/initrd
+}
+menuentry "@NAME@ (load entire system to RAM)" {
+    set gfxpayload=keep
+    linux   /casper/vmlinuz boot=casper toram quiet splash ---
+    initrd  /casper/initrd
+}
+menuentry "Check disc for defects" {
+    set gfxpayload=keep
+    linux   /casper/vmlinuz boot=casper integrity-check quiet splash ---
+    initrd  /casper/initrd
+}
+if [ "$grub_platform" = "efi" ]; then
+  menuentry "UEFI firmware settings" {
+      fwsetup
+  }
+fi

@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# deluxe-theme — apply the Deluxe light/dark theme.
+#
+#   deluxe-theme auto|light|dark   set the mode (stored in GSettings) and apply it now
+#   deluxe-theme --apply           apply the stored mode (called every 10 min by deluxe-theme.timer)
+#   deluxe-theme --status          print the stored mode and what is currently applied
+#
+# "auto" = light between auto-light-start (default 07:00) and auto-dark-start (default 19:00), dark otherwise.
+set -u
+S=org.deluxe.system
+I=org.gnome.desktop.interface
+
+get() { gsettings get "$S" "$1" 2>/dev/null | tr -d "'"; }
+mins() { local h=${1%%:*} m=${1##*:}; echo $(( 10#$h * 60 + 10#$m )); }
+
+effective() { # light|dark for the stored mode
+  case "$(get theme-mode)" in
+    light) echo light ;;
+    dark)  echo dark ;;
+    *)
+      local now ls ds
+      now=$(( 10#$(date +%H) * 60 + 10#$(date +%M) ))
+      ls=$(mins "$(get auto-light-start)"); ds=$(mins "$(get auto-dark-start)")
+      if (( now >= ls && now < ds )); then echo light; else echo dark; fi ;;
+  esac
+}
+
+apply() {
+  local want cur
+  want=$(effective)
+  if [ "$want" = dark ]; then
+    cur=$(gsettings get $I color-scheme)
+    [ "$cur" = "'prefer-dark'" ] || gsettings set $I color-scheme 'prefer-dark'
+    gsettings set $I gtk-theme 'Deluxe-dark'
+    gsettings set $I icon-theme 'Papirus-Dark'
+  else
+    cur=$(gsettings get $I color-scheme)
+    [ "$cur" = "'prefer-light'" ] || gsettings set $I color-scheme 'prefer-light'
+    gsettings set $I gtk-theme 'Deluxe'
+    gsettings set $I icon-theme 'Papirus'
+  fi
+}
+
+case "${1:-}" in
+  auto|light|dark) gsettings set "$S" theme-mode "$1"; apply ;;
+  --apply|"") apply ;;
+  --status) echo "mode: $(get theme-mode)  ->  applied: $(effective)" ;;
+  *) echo "usage: deluxe-theme auto|light|dark|--apply|--status" >&2; exit 2 ;;
+esac

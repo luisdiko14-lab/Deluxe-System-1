@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# deluxe-installer — start the Calamares installer from the live desktop.
+# Calamares needs root, but the GNOME session is the user's. Qt runs through Xwayland (xcb) and we
+# grant root access to that X server only for the lifetime of the installer.
+set -u
+export QT_QPA_PLATFORM=xcb
+xhost +si:localuser:root >/dev/null 2>&1 || true
+trap 'xhost -si:localuser:root >/dev/null 2>&1 || true' EXIT
+if [ "$(id -u)" -eq 0 ]; then
+  calamares "$@"
+else
+  sudo -E env DISPLAY="${DISPLAY:-:0}" XAUTHORITY="${XAUTHORITY:-}" XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-}" \
+       QT_QPA_PLATFORM=xcb calamares "$@"
+fi

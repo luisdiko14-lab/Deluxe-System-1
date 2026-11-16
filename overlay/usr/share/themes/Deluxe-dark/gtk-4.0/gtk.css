@@ -1,0 +1,6 @@
+/* See Deluxe/gtk-4.0/gtk.css — libadwaita apps get their look from ~/.config/gtk-4.0/gtk.css. */
+@define-color accent_bg_color #f5c542;
+@define-color accent_fg_color #0e1738;
+@define-color accent_color #f5c542;
+window.background { border-radius: 12px; }
+button { border-radius: 8px; }

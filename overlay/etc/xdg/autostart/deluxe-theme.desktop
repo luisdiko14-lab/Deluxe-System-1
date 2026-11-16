@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Deluxe theme (apply at login)
+Exec=/usr/local/bin/deluxe-theme --apply
+NoDisplay=true
+OnlyShowIn=GNOME;

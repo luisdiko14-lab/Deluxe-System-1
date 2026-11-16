@@ -1,0 +1,10 @@
+[Unit]
+Description=Switch Deluxe theme between light and dark on schedule
+
+[Timer]
+OnStartupSec=30
+OnUnitActiveSec=10min
+AccuracySec=30s
+
+[Install]
+WantedBy=timers.target
