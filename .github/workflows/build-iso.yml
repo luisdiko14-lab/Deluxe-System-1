@@ -1,0 +1,99 @@
+name: Build Deluxe System 1 ISO
+
+on:
+  workflow_dispatch:
+    inputs:
+      quick:
+        description: Use faster zstd compression (larger ISO; intended for testing)
+        required: false
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths:
+      - "build.sh"
+      - "config.env"
+      - "packages/**"
+      - "hooks/**"
+      - "overlay/**"
+      - "calamares/**"
+      - "iso/**"
+      - "tools/**"
+      - ".github/workflows/build-iso.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deluxe-iso-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build bootable hybrid ISO
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Free runner disk space
+        shell: bash
+        run: |
+          set -euxo pipefail
+          sudo rm -rf \
+            /usr/local/lib/android \
+            /usr/share/dotnet \
+            /opt/ghc \
+            /usr/local/share/boost \
+            /usr/local/.ghcup \
+            /usr/share/swift \
+            /opt/microsoft \
+            /usr/local/lib/node_modules
+          sudo apt-get clean
+          sudo rm -rf /var/lib/apt/lists/*
+          df -h /
+
+      - name: Verify build capacity
+        shell: bash
+        run: |
+          set -euo pipefail
+          available_gb="$(df --output=avail -BG "$GITHUB_WORKSPACE" | tail -1 | tr -dc '0-9')"
+          echo "Available workspace disk: ${available_gb} GB"
+          if (( available_gb < 30 )); then
+            echo "::error::The GitHub-hosted runner has only ${available_gb} GB free; this ISO build requires at least 30 GB. Use a larger/self-hosted Ubuntu 24.04 runner."
+            exit 1
+          fi
+
+      - name: Build release ISO
+        if: ${{ !inputs.quick }}
+        run: sudo ./build.sh
+
+      - name: Build quick test ISO
+        if: ${{ inputs.quick }}
+        run: sudo ./build.sh --quick
+
+      - name: Verify ISO and checksum
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd out
+          sha_file="$(find . -maxdepth 1 -name '*.iso.sha256' -print -quit)"
+          test -n "$sha_file"
+          sha256sum --check "$sha_file"
+          ls -lh
+
+      - name: Upload ISO, checksum, and package manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: deluxe-system-1-iso-${{ github.run_number }}
+          path: |
+            out/*.iso
+            out/*.iso.sha256
+            out/*.manifest
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
