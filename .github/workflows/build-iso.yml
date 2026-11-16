@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       quick:
-        description: Use faster zstd compression (larger ISO; intended for testing)
+        description: Use faster zstd compression (larger ISO; testing only)
         required: false
         type: boolean
         default: false
@@ -25,14 +25,14 @@ permissions:
   contents: read
 
 concurrency:
-  group: deluxe-iso-${{ github.ref }}
+  group: deluxe-iso-self-hosted-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   build:
-    name: Build bootable hybrid ISO
-    runs-on: ubuntu-24.04
-    timeout-minutes: 240
+    name: Build Deluxe System 1 ISO (self-hosted)
+    runs-on: [self-hosted, linux, x64]
+    timeout-minutes: 360
 
     steps:
       - name: Check out source
@@ -40,41 +40,37 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Free runner disk space
-        shell: bash
-        run: |
-          set -euxo pipefail
-          sudo rm -rf \
-            /usr/local/lib/android \
-            /usr/share/dotnet \
-            /opt/ghc \
-            /usr/local/share/boost \
-            /usr/local/.ghcup \
-            /usr/share/swift \
-            /opt/microsoft \
-            /usr/local/lib/node_modules
-          sudo apt-get clean
-          sudo rm -rf /var/lib/apt/lists/*
-          df -h /
-
-      - name: Verify build capacity
+      - name: Check runner requirements
         shell: bash
         run: |
           set -euo pipefail
+          if [[ "$(uname -m)" != "x86_64" ]]; then
+            echo "::error::This project builds amd64 ISOs; the runner must be x86_64."
+            exit 1
+          fi
+          if [[ ! -r /etc/os-release ]] || ! grep -q '^VERSION_ID="24.04"$' /etc/os-release; then
+            echo "::error::Use an Ubuntu 24.04 runner for a supported build."
+            cat /etc/os-release || true
+            exit 1
+          fi
+          if ! sudo -n true 2>/dev/null; then
+            echo "::error::The runner service user needs passwordless sudo because build.sh installs host packages and uses mount/chroot."
+            exit 1
+          fi
           available_gb="$(df --output=avail -BG "$GITHUB_WORKSPACE" | tail -1 | tr -dc '0-9')"
-          echo "Available workspace disk: ${available_gb} GB"
+          echo "Available disk space: ${available_gb} GB"
           if (( available_gb < 30 )); then
-            echo "::error::The GitHub-hosted runner has only ${available_gb} GB free; this ISO build requires at least 30 GB. Use a larger/self-hosted Ubuntu 24.04 runner."
+            echo "::error::At least 30 GB of free disk space is required; found ${available_gb} GB."
             exit 1
           fi
 
-      - name: Build release ISO
+      - name: Build release ISO (XZ)
         if: ${{ !inputs.quick }}
-        run: sudo ./build.sh
+        run: sudo -E ./build.sh
 
-      - name: Build quick test ISO
+      - name: Build quick test ISO (Zstandard)
         if: ${{ inputs.quick }}
-        run: sudo ./build.sh --quick
+        run: sudo -E ./build.sh --quick
 
       - name: Verify ISO and checksum
         shell: bash
@@ -82,7 +78,10 @@ jobs:
           set -euo pipefail
           cd out
           sha_file="$(find . -maxdepth 1 -name '*.iso.sha256' -print -quit)"
-          test -n "$sha_file"
+          if [[ -z "$sha_file" ]]; then
+            echo "::error::No ISO checksum file was generated."
+            exit 1
+          fi
           sha256sum --check "$sha_file"
           ls -lh
 
