@@ -52,6 +52,7 @@ wget
 
 ## --- GNOME desktop -----------------------------------------------------------------------
 gnome-core
+gdm3
 gnome-tweaks
 gnome-shell-extension-ubuntu-dock
 gnome-shell-extension-appindicator
