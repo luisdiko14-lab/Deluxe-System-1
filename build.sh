@@ -25,6 +25,7 @@ CHROOT="$WORK/chroot"
 IMAGE="$WORK/image"
 CACHE="$WORK/cache"
 ISO_NAME="${DELUXE_ISO_BASENAME}-${DELUXE_VERSION}-amd64.iso"
+[[ "${SKIP_THIRD_PARTY:-0}" == "1" ]] && ISO_NAME="${DELUXE_ISO_BASENAME}-${DELUXE_VERSION}-amd64-nothirdparty.iso"
 
 DO_CLEAN=0
 for arg in "$@"; do
@@ -152,7 +153,7 @@ run_hook() {
     PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
     DEBIAN_FRONTEND=noninteractive LC_ALL=C.UTF-8 \
     SOURCE_DATE_EPOCH="$SOURCE_DATE_EPOCH" \
-    DELUXE_SNAPSHOT="$DELUXE_SNAPSHOT" \
+    DELUXE_SNAPSHOT="$DELUXE_SNAPSHOT" SKIP_THIRD_PARTY="${SKIP_THIRD_PARTY:-0}" \
     /bin/bash -eu -o pipefail "/tmp/deluxe-build/hooks/$hook"
 }
 

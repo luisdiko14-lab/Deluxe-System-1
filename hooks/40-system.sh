@@ -35,3 +35,13 @@ systemctl enable NetworkManager.service bluetooth.service power-profiles-daemon.
 for u in apport.service whoopsie.service ubuntu-report.service popularity-contest.timer; do
   systemctl mask "$u" 2>/dev/null || true
 done
+
+# --- Ubuntu Pro client: required by gnome-software's dependency chain, so keep the package but silence it
+for u in ubuntu-advantage.service ua-timer.timer ua-timer.service apt-news.service esm-cache.service \
+         ubuntu-advantage-desktop-daemon.service ua-reboot-cmds.service; do
+  systemctl mask "$u" 2>/dev/null || true
+done
+rm -f /etc/apt/apt.conf.d/20apt-esm-hook.conf /etc/apt/apt.conf.d/20apt-esm-hook 2>/dev/null || true
+rm -f /etc/apt/apt.conf.d/20pro-news* 2>/dev/null || true
+install -d /etc/ubuntu-advantage
+printf 'apt_news: false\n' > /etc/ubuntu-advantage/uaclient.conf.deluxe 2>/dev/null || true

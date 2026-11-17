@@ -17,7 +17,7 @@ EOF
 
 # Permanently keep snap, Ubuntu telemetry and Pro nag-ware off the system.
 cat > /etc/apt/preferences.d/50-deluxe-block <<'EOF'
-Package: snapd gnome-software-plugin-snap ubuntu-report apport whoopsie popularity-contest ubuntu-advantage-tools ubuntu-pro-client
+Package: snapd gnome-software-plugin-snap ubuntu-report apport whoopsie popularity-contest
 Pin: release *
 Pin-Priority: -1
 EOF
@@ -25,6 +25,9 @@ EOF
 apt-get update
 apt-get -y dist-upgrade
 
+if [ "${SKIP_THIRD_PARTY:-0}" = 1 ]; then
+  echo "SKIP_THIRD_PARTY=1: not adding Mozilla/VSCodium repositories (validation build)"
+else
 # ---- Third-party repositories (signed, pinned) -----------------------------------------
 install -d -m 0755 /etc/apt/keyrings /usr/share/keyrings
 
@@ -65,6 +68,8 @@ Components: main
 Architectures: amd64
 Signed-By: /usr/share/keyrings/vscodium-archive-keyring.gpg
 EOF
+
+fi
 
 # ---- debconf preseeding so nothing prompts ----------------------------------------------
 echo 'en_US.UTF-8 UTF-8' > /etc/locale.gen

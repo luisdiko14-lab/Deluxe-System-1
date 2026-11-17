@@ -7,6 +7,9 @@ PKG=/tmp/deluxe-build/packages
 strip_list() { sed -e 's/#.*//' -e 's/[[:space:]]*$//' -e '/^$/d' "$1"; }
 
 mapfile -t WANT < <(strip_list "$PKG/packages.list")
+if [ "${SKIP_THIRD_PARTY:-0}" = 1 ]; then
+  mapfile -t WANT < <(printf '%s\n' "${WANT[@]}" | grep -vxE 'firefox|codium')
+fi
 
 # Fail early, and list EVERY missing package at once, instead of dying on the first one.
 missing=()

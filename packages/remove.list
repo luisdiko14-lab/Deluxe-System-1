@@ -6,8 +6,6 @@ apport
 apport-symptoms
 whoopsie
 popularity-contest
-ubuntu-advantage-tools
-ubuntu-pro-client
 totem
 totem-plugins
 gnome-mahjongg
@@ -16,3 +14,5 @@ gnome-sudoku
 aisleriot
 gnome-games
 cups-browsed
+# NOTE: ubuntu-pro-client stays installed: gnome-software -> software-properties-gtk depends on it.
+# It is neutralised in hooks/40-system.sh (timers masked, APT news/ESM hooks removed).
