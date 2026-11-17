@@ -69,6 +69,23 @@ preflight() {
   local free_gb
   free_gb=$(df --output=avail -BG "$WORK" | tail -1 | tr -dc '0-9')
   (( free_gb >= MIN_FREE_GB )) || die "need ${MIN_FREE_GB} GB free in $WORK, have ${free_gb} GB"
+  # debootstrap needs device nodes + exec: fix a nodev/noexec work dir (e.g. Codespaces /workspaces).
+  local mp opts
+  mp=$(findmnt -n -o TARGET -T "$WORK" 2>/dev/null || true)
+  opts=$(findmnt -n -o OPTIONS -T "$WORK" 2>/dev/null || true)
+  if [[ -n "$mp" && ( ",$opts," == *,nodev,* || ",$opts," == *,noexec,* ) ]]; then
+    info "$WORK is on $mp mounted with ($opts); trying to remount with dev,exec"
+    if ! mount -o remount,dev,exec,suid "$mp" 2>/dev/null; then
+      local alt="/var/tmp/deluxe-build" altfree
+      mkdir -p "$alt"
+      altfree=$(df --output=avail -BG "$alt" | tail -1 | tr -dc '0-9')
+      if findmnt -n -o OPTIONS -T "$alt" | grep -qE '(^|,)(nodev|noexec)(,|$)' || (( altfree < MIN_FREE_GB )); then
+        die "$WORK is mounted nodev/noexec and cannot be fixed. Use WORK=<dir on a normal filesystem with >= ${MIN_FREE_GB} GB free>."
+      fi
+      info "remount failed; using WORK=$alt (${altfree} GB free)"
+      WORK="$alt"; CHROOT="$WORK/chroot"; IMAGE="$WORK/image"; CACHE="$WORK/cache"
+    fi
+  fi
   # shellcheck disable=SC2015
   curl -fsI --max-time 15 "$UBUNTU_MIRROR/dists/$UBUNTU_SUITE/Release" >/dev/null 2>&1 \
     || [[ -n "$DELUXE_SNAPSHOT" ]] || die "cannot reach $UBUNTU_MIRROR (no internet?)"
