@@ -15,7 +15,7 @@
 **Fix:** rerun (transient). For a Mozilla fingerprint mismatch compare with Mozilla's documentation and update `MOZILLA_KEY_FPR` in `config.env` — **do not** just delete the check. VSCodium: run once, copy the fingerprint the build prints, and set `VSCODIUM_KEY_FPR` to pin it. Without network access to these hosts, remove `firefox` and `codium` from `packages.list` and install them later with the Welcome app/Flathub.
 
 ### 4. "No space left on device" during squashfs, or "ISO is N bytes, over the limit"
-**Cause:** less than ~30 GB free, or the image grew past 4.7 GB.
+**Cause:** less than ~16 GB free, or the image grew past 4.7 GB.
 **Fix:** free space or set `WORK=/bigdisk/build OUT=/bigdisk/out`. For size: move apps from `packages.list` to the Flatpak list in `welcome.py`, drop `libreoffice-draw`/language packs, keep `xz` (not `--quick`). `build/chroot` size is printed by `du -sh build/chroot`.
 
 ### 5. ISO boots to a GRUB prompt, "no such device", or "can't find /casper/vmlinuz"; UEFI doesn't list the stick

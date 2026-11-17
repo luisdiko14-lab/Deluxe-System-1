@@ -59,8 +59,8 @@ jobs:
           fi
           available_gb="$(df --output=avail -BG "$GITHUB_WORKSPACE" | tail -1 | tr -dc '0-9')"
           echo "Available disk space: ${available_gb} GB"
-          if (( available_gb < 30 )); then
-            echo "::error::At least 30 GB of free disk space is required; found ${available_gb} GB."
+          if (( available_gb < 16 )); then
+            echo "::error::At least 16 GB of free disk space is required; found ${available_gb} GB."
             exit 1
           fi
 

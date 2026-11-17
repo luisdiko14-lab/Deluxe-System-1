@@ -13,7 +13,7 @@ sudo ./build.sh            # → out/deluxe-system-1-1.0-amd64.iso + .sha256 + .
 | Static checks (bash syntax, Python compile, YAML/XML/SVG/.desktop parse) | done, pass |
 | Artwork generator (logo, 5 wallpapers × light/dark, Plymouth, GRUB, Calamares images) | run, output inspected |
 | ISO assembly (`make_boot_files` + `make_iso` from `build.sh`) with the real Canonical-signed shim/GRUB and a **stub** root filesystem | run, produced a hybrid ISO |
-| **Full end-to-end build** (debootstrap → packages → squashfs → ISO) | **not run yet** — needs ~30 GB and 1–2 h |
+| **Full end-to-end build** (debootstrap → packages → squashfs → ISO) | **not run yet** — needs ~18 GB and 1–2 h |
 | **Booting** the ISO (BIOS, UEFI, Secure Boot), Calamares install with/without LUKS, theme look | **not tested yet** — use [docs/VERIFY.md](docs/VERIFY.md) |
 
 Package names were chosen for noble but not all were verified against the archive from here; `hooks/10-packages.sh` checks every package up front and lists *all* that are missing in one message, so a first build fails fast with an exact fix list (see [Troubleshooting](docs/TROUBLESHOOTING.md)).

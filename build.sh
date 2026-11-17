@@ -5,7 +5,7 @@
 # Builds deluxe-system-1-1.0-amd64.iso (+ .sha256, .manifest) from Ubuntu 24.04 (noble).
 # Hybrid BIOS + UEFI (Secure Boot capable: Canonical-signed shim + GRUB + kernel).
 #
-# Run on a fresh Ubuntu 24.04 amd64 machine or VM with ~30 GB free disk and internet:
+# Run on a fresh Ubuntu 24.04 amd64 machine or VM with ~18 GB free disk (low-disk mode; set KEEP_CHROOT=1 to keep the chroot, needs ~30 GB) and internet:
 #     sudo ./build.sh                # normal release build (xz, smallest ISO)
 #     sudo ./build.sh --quick        # zstd compression, much faster, bigger ISO (for testing)
 #     sudo ./build.sh --clean        # delete ./build and ./out first
@@ -313,6 +313,8 @@ main() {
   make_image_tree
   make_squashfs
   make_boot_files
+  # Low-disk mode: the chroot is no longer needed once squashfs + boot files exist; free ~9 GB before xorriso.
+  if [[ "${KEEP_CHROOT:-0}" != 1 ]]; then log "Freeing chroot to save disk"; umount_chroot; rm -rf "$CHROOT" "$CACHE"; fi
   make_iso
   log "Done: $OUT/$ISO_NAME"
 }

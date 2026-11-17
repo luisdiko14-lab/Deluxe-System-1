@@ -26,7 +26,9 @@ fi
 
 # The kernel is installed WITH recommends so modules-extra (more Wi-Fi/NIC drivers) comes along.
 apt-get install -y --install-recommends linux-generic
+apt-get clean
 apt-get install -y --no-install-recommends "${WANT[@]}"
+apt-get clean   # drop ~3 GB of downloaded .debs right away (low-disk build)
 
 # Remove bloat that slipped in as a dependency.
 mapfile -t DROP < <(strip_list "$PKG/remove.list")

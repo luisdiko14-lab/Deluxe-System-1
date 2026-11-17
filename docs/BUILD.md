@@ -2,7 +2,7 @@
 
 ## 1. Build
 
-Needs: Ubuntu 24.04 amd64 (VM is fine), ≥ 30 GB free disk, 4+ GB RAM, internet. `build.sh` installs its own host dependencies.
+Needs: Ubuntu 24.04 amd64 (VM is fine), ≥ 18 GB free disk (≈ 30 GB with KEEP_CHROOT=1), 4+ GB RAM, internet. `build.sh` installs its own host dependencies.
 
 ```bash
 git clone https://github.com/luisdiko14-lab/deluxe-system-1 && cd deluxe-system-1
